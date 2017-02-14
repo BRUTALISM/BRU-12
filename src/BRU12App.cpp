@@ -11,6 +11,7 @@ using namespace std;
 #define HEIGHT 768
 #define NODE_COUNT 100
 #define INDEX_COUNT NODE_COUNT * 3
+//#define INDEX_COUNT 10
 
 struct Node {
     vec3 position;
@@ -32,6 +33,7 @@ public:
     vector<uint32_t> indices;
     vector<Node> nodes;
 
+    gl::VboRef vbo;
     geom::BufferLayout layout;
     gl::VboMeshRef mesh;
 //    gl::BatchRef meshBatch;
@@ -40,7 +42,7 @@ public:
 BRU12App::BRU12App() : camera(WIDTH, HEIGHT, 90, 0.0001, 10000) {}
 
 void BRU12App::setup() {
-    camera.lookAt(vec3(5.0, 1.0, 7.0), vec3(5.0, 1.0, 1.0));
+    camera.lookAt(vec3(5.0, 1.0, 7.0), vec3(5.0, 4.0, 1.0));
 
     auto glsl = gl::GlslProg::Format()
         .vertex(loadAsset("../Resources/vert.glsl"))
@@ -57,7 +59,7 @@ void BRU12App::setup() {
     for (uint32_t i = 0; i < NODE_COUNT; i++) {
         Node node;
         node.position = vec3(xDistribution(gen), yzDistribution(gen), yzDistribution(gen));
-        node.color = Color(colorDistribution(gen), colorDistribution(gen), colorDistribution(gen));
+        node.color = Color(1.0, colorDistribution(gen), colorDistribution(gen));
         nodes.push_back(node);
 
         indices.push_back(i);
@@ -65,12 +67,12 @@ void BRU12App::setup() {
         indices.push_back(rand() % NODE_COUNT);
     }
 
-    gl::VboRef vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_DYNAMIC_DRAW);
+    vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_DYNAMIC_DRAW);
 
     layout.append(geom::Attrib::POSITION, 3, sizeof(vec3), offsetof(Node, position));
     layout.append(geom::Attrib::COLOR, 4, sizeof(Color), offsetof(Node, color));
 
-    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_LINE_LOOP, {{ layout, vbo }},
                                (uint32_t) indices.size(), GL_UNSIGNED_INT);
 //    mesh->bufferAttrib(geom::Attrib::POSITION, sizeof(vec3) * vertices.size(), vertices.data());
 //    mesh->bufferAttrib(geom::Attrib::COLOR, sizeof(Color) * colors.size(), colors.data());
@@ -93,22 +95,48 @@ void BRU12App::mouseDown(MouseEvent event) {
         indices[i] = rand() % NODE_COUNT;
     }
 
-    gl::VboRef vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
-    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+    vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STREAM_DRAW);
+    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_LINE_LOOP, {{ layout, vbo }},
                                (uint32_t) indices.size(), GL_UNSIGNED_INT);
     mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
 }
 
 void BRU12App::update() {
-//    auto positionAttribute = mesh->mapAttrib3f(geom::Attrib::POSITION, false);
+    // Radi, ali nije najsjajnije jer je interleaved buffer:
+//    auto mappedPosition = mesh->mapAttrib3f(geom::Attrib::POSITION, false);
+////    auto mappedColor = mesh->mapAttrib3f(geom::Attrib::COLOR, false);
+//
 //
 //    for(int i = 0; i < mesh->getNumVertices(); i++) {
-//        vec3& position = *positionAttribute;
-//        positionAttribute->y = (float) 1;
-//        ++positionAttribute;
+//        vec3& position = *mappedPosition;
+//        mappedPosition->y = position.y + 0.01;
+//        ++mappedPosition;
+//
+////        vec3& color = *mappedColor;
+////        ++mappedColor;
 //    }
 //
-//    positionAttribute.unmap();
+////    mappedColor.unmap();
+//    mappedPosition.unmap();
+
+    // Radi, ali treperi:
+//    auto nodeVbo = mesh->getVertexArrayVbos()[0];
+//    Node* node = (Node*) nodeVbo->mapReplace();
+//    for (int i = 0; i < nodes.size(); i++) {
+//        node->position.y += 0.01;
+//        node++;
+//    }
+//    nodeVbo->unmap();
+
+    for (Node& node : nodes) {
+        // Zasto ne pomera sve tacke???
+        node.position.y += 0.005;
+    }
+
+    auto mappedBuffer = vbo->mapReplace();
+    // PLJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSSS
+    memcpy(mappedBuffer, nodes.data(), nodes.size() * sizeof(Node));
+    vbo->unmap();
 }
 
 void BRU12App::draw() {
