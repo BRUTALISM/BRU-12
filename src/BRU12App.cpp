@@ -1,6 +1,7 @@
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
+#include "cinder/Perlin.h"
 #include <random>
 
 using namespace ci;
@@ -38,6 +39,8 @@ public:
     gl::VboMeshRef mesh;
 //    gl::BatchRef meshBatch;
 
+    Perlin perlin;
+
 private:
     void recreateVBOs();
 };
@@ -45,7 +48,7 @@ private:
 BRU12App::BRU12App() : camera(WIDTH, HEIGHT, 90, 0.0001, 10000) {}
 
 void BRU12App::setup() {
-    camera.lookAt(vec3(5.0, 1.0, 7.0), vec3(5.0, 4.0, 1.0));
+    camera.lookAt(vec3(5.0, 0.0, 7.0), vec3(5.0, 0.0, 1.0));
 
     auto glsl = gl::GlslProg::Format()
         .vertex(loadAsset("../Resources/vert.glsl"))
@@ -64,7 +67,7 @@ void BRU12App::setup() {
     for (uint32_t i = 0; i < NODE_COUNT; i++) {
         Node node;
         node.position = vec3(xDistribution(gen), yzDistribution(gen), yzDistribution(gen));
-        node.color = Color(1.0, 0.0, colorDistribution(gen));
+        node.color = Color(colorDistribution(gen), 0.0, 0.0);
         nodes.push_back(node);
 
         indices.push_back(i);
@@ -137,19 +140,22 @@ void BRU12App::update() {
 //    }
 //    nodeVbo->unmap();
 
+    const float timeFactor = 2.9f;
+    const float perlinScale = 0.07f;
     for (Node& node : nodes) {
-        node.position.y += 0.005;
-//        node.color.g += 0.005;
+        vec3 perlinCoord(node.position.x,
+                         getElapsedSeconds() * timeFactor,
+                         node.position.z);
+        node.position.y += perlin.fBm(perlinCoord) * perlinScale;
     }
 
     auto mappedBuffer = vbo->mapWriteOnly();
-    // PLJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSSS
     memcpy(mappedBuffer, nodes.data(), nodes.size() * sizeof(Node));
     vbo->unmap();
 }
 
 void BRU12App::draw() {
-    gl::clear(Color(0.2f, 0.2f, 0.2f));
+    gl::clear(Color(0.9f, 0.9f, 0.9f));
     gl::setMatrices(camera);
 
     {
