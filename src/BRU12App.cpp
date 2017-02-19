@@ -9,9 +9,8 @@ using namespace std;
 
 #define WIDTH 1200
 #define HEIGHT 768
-#define NODE_COUNT 100
+#define NODE_COUNT 40
 #define INDEX_COUNT NODE_COUNT * 3
-//#define INDEX_COUNT 10
 
 struct Node {
     vec3 position;
@@ -34,9 +33,13 @@ public:
     vector<Node> nodes;
 
     gl::VboRef vbo;
+    gl::VboRef indexVbo;
     geom::BufferLayout layout;
     gl::VboMeshRef mesh;
 //    gl::BatchRef meshBatch;
+
+private:
+    void recreateVBOs();
 };
 
 BRU12App::BRU12App() : camera(WIDTH, HEIGHT, 90, 0.0001, 10000) {}
@@ -54,12 +57,14 @@ void BRU12App::setup() {
     auto xDistribution = uniform_real_distribution<double>(0.0, 10.0);
     auto yzDistribution = uniform_real_distribution<double>(0.0, 2.0);
     auto colorDistribution = uniform_real_distribution<double>(0.0, 1.0);
+
     nodes.reserve(NODE_COUNT);
-    indices.reserve(NODE_COUNT * 3);
+    indices.reserve(INDEX_COUNT);
+
     for (uint32_t i = 0; i < NODE_COUNT; i++) {
         Node node;
         node.position = vec3(xDistribution(gen), yzDistribution(gen), yzDistribution(gen));
-        node.color = Color(1.0, colorDistribution(gen), colorDistribution(gen));
+        node.color = Color(1.0, 0.0, colorDistribution(gen));
         nodes.push_back(node);
 
         indices.push_back(i);
@@ -67,25 +72,32 @@ void BRU12App::setup() {
         indices.push_back(rand() % NODE_COUNT);
     }
 
-    vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_DYNAMIC_DRAW);
+    layout.append(geom::Attrib::POSITION, 3, sizeof(Node), offsetof(Node, position));
+    layout.append(geom::Attrib::COLOR, 3, sizeof(Node), offsetof(Node, color));
 
-    layout.append(geom::Attrib::POSITION, 3, sizeof(vec3), offsetof(Node, position));
-    layout.append(geom::Attrib::COLOR, 4, sizeof(Color), offsetof(Node, color));
-
-    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_LINE_LOOP, {{ layout, vbo }},
-                               (uint32_t) indices.size(), GL_UNSIGNED_INT);
-//    mesh->bufferAttrib(geom::Attrib::POSITION, sizeof(vec3) * vertices.size(), vertices.data());
-//    mesh->bufferAttrib(geom::Attrib::COLOR, sizeof(Color) * colors.size(), colors.data());
-    mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
+    recreateVBOs();
 
 //    meshBatch = gl::Batch::create(mesh, glslProg);
 
     gl::enableDepthWrite();
     gl::enableDepthRead();
+}
 
-    GLint numAttribs;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &numAttribs);
-    console() << "Number of vertex attributes: " << numAttribs << endl;
+void BRU12App::recreateVBOs() {
+    vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STREAM_DRAW);
+
+    // Ovo je jedan nacin da furaš indekse - preko zasebnog index VBO niza, pa da onda nad njim
+    // radiš mapiranje i memcpy
+//    indexVbo = gl::Vbo::create(GL_ELEMENT_ARRAY_BUFFER, indices);
+//    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+//                               (uint32_t) indices.size(), GL_UNSIGNED_INT, indexVbo);
+
+    // Ovo je drugi, verovatno jednostavniji način da se indeksira
+    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+                               (uint32_t) indices.size(), GL_UNSIGNED_INT);
+    mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void BRU12App::mouseDown(MouseEvent event) {
@@ -95,10 +107,7 @@ void BRU12App::mouseDown(MouseEvent event) {
         indices[i] = rand() % NODE_COUNT;
     }
 
-    vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STREAM_DRAW);
-    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_LINE_LOOP, {{ layout, vbo }},
-                               (uint32_t) indices.size(), GL_UNSIGNED_INT);
-    mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
+    recreateVBOs();
 }
 
 void BRU12App::update() {
@@ -129,11 +138,11 @@ void BRU12App::update() {
 //    nodeVbo->unmap();
 
     for (Node& node : nodes) {
-        // Zasto ne pomera sve tacke???
         node.position.y += 0.005;
+//        node.color.g += 0.005;
     }
 
-    auto mappedBuffer = vbo->mapReplace();
+    auto mappedBuffer = vbo->mapWriteOnly();
     // PLJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASSSSSSSSSSSS
     memcpy(mappedBuffer, nodes.data(), nodes.size() * sizeof(Node));
     vbo->unmap();
