@@ -54,7 +54,6 @@ void BRU12App::setup() {
     glslProg = gl::GlslProg::create(glsl);
 
     indices.reserve(INDEX_COUNT);
-
     for (uint32_t i = 0; i < NODE_COUNT; i++) {
         indices.push_back(i);
         indices.push_back(rand() % NODE_COUNT);
@@ -82,11 +81,12 @@ void BRU12App::recreateVBOs() {
 //                               (uint32_t) indices.size(), GL_UNSIGNED_INT, indexVbo);
 
     // Ovo je drugi, verovatno jednostavniji način da se indeksira
-    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLE_STRIP, {{ layout, vbo }},
-                               (uint32_t) indices.size(), GL_UNSIGNED_INT);
-    mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
+//    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_LINES, {{ layout, vbo }},
+//                               (uint32_t) indices.size(), GL_UNSIGNED_INT);
+//    mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
 
-//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // Ovo kada hoćeš da iscrtavaš samo tačke, ne treba ti indeks niz
+    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_POINTS, {{ layout, vbo }});
 }
 
 void BRU12App::mouseDown(MouseEvent event) {
@@ -150,6 +150,8 @@ void BRU12App::draw() {
 
     {
         gl::ScopedGlslProg glsl(glslProg);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
+        gl::pointSize(4.0f);
         gl::draw(mesh);
     }
 
