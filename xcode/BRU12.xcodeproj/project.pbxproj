@@ -22,6 +22,8 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E710EA921E4BA5C90017BB3B /* vert.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA911E4BA5C90017BB3B /* vert.glsl */; };
 		E710EA941E4BA5F20017BB3B /* frag.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA931E4BA5F20017BB3B /* frag.glsl */; };
+		E72497C91E6216A000F2F193 /* Process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E72497C71E6216A000F2F193 /* Process.cpp */; };
+		E732E0831E5E4047009F9059 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E732E0811E5E4047009F9059 /* Node.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,10 @@
 		E6126BC6748348888E0B41C3 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
 		E710EA911E4BA5C90017BB3B /* vert.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vert.glsl; path = ../resources/vert.glsl; sourceTree = "<group>"; };
 		E710EA931E4BA5F20017BB3B /* frag.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frag.glsl; path = ../resources/frag.glsl; sourceTree = "<group>"; };
+		E72497C71E6216A000F2F193 /* Process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Process.cpp; path = ../src/Process.cpp; sourceTree = "<group>"; };
+		E72497C81E6216A000F2F193 /* Process.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Process.hpp; path = ../src/Process.hpp; sourceTree = "<group>"; };
+		E732E0811E5E4047009F9059 /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = ../src/Node.cpp; sourceTree = "<group>"; };
+		E732E0821E5E4047009F9059 /* Node.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Node.hpp; path = ../src/Node.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +87,10 @@
 			isa = PBXGroup;
 			children = (
 				DD79EB46CC324B4985DD9762 /* BRU12App.cpp */,
+				E732E0811E5E4047009F9059 /* Node.cpp */,
+				E732E0821E5E4047009F9059 /* Node.hpp */,
+				E72497C71E6216A000F2F193 /* Process.cpp */,
+				E72497C81E6216A000F2F193 /* Process.hpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -229,6 +239,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				56BD8060178346DEB90E7048 /* BRU12App.cpp in Sources */,
+				E72497C91E6216A000F2F193 /* Process.cpp in Sources */,
+				E732E0831E5E4047009F9059 /* Node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
