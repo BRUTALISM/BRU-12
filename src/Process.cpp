@@ -25,7 +25,7 @@ Process::Process(int nodeCount) {
 }
 
 void Process::update() {
-    for (Node& node: nodes) {
+    for (Node& node : nodes) {
         node.update(perlin);
     }
 }

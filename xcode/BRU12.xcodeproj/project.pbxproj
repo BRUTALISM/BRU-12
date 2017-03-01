@@ -24,6 +24,9 @@
 		E710EA941E4BA5F20017BB3B /* frag.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA931E4BA5F20017BB3B /* frag.glsl */; };
 		E72497C91E6216A000F2F193 /* Process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E72497C71E6216A000F2F193 /* Process.cpp */; };
 		E732E0831E5E4047009F9059 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E732E0811E5E4047009F9059 /* Node.cpp */; };
+		E7E721701E6758720088765E /* libopenvdb.4.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */; };
+		E7E7217C1E675D010088765E /* libtbb.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217B1E675D010088765E /* libtbb.dylib */; };
+		E7E7217E1E675D5B0088765E /* libHalf.12.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217D1E675D5B0088765E /* libHalf.12.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +55,9 @@
 		E72497C81E6216A000F2F193 /* Process.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Process.hpp; path = ../src/Process.hpp; sourceTree = "<group>"; };
 		E732E0811E5E4047009F9059 /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = ../src/Node.cpp; sourceTree = "<group>"; };
 		E732E0821E5E4047009F9059 /* Node.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Node.hpp; path = ../src/Node.hpp; sourceTree = "<group>"; };
+		E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenvdb.4.0.0.dylib; path = ../../../../../usr/local/Cellar/openvdb/4.0.0_1/lib/libopenvdb.4.0.0.dylib; sourceTree = "<group>"; };
+		E7E7217B1E675D010088765E /* libtbb.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb.dylib; path = "../../../../../usr/local/Cellar/tbb/4.4-20161128/lib/libtbb.dylib"; sourceTree = "<group>"; };
+		E7E7217D1E675D5B0088765E /* libHalf.12.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libHalf.12.dylib; path = ../../../../../usr/local/Cellar/ilmbase/2.2.0/lib/libHalf.12.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +65,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7E7217E1E675D5B0088765E /* libHalf.12.dylib in Frameworks */,
+				E7E7217C1E675D010088765E /* libtbb.dylib in Frameworks */,
+				E7E721701E6758720088765E /* libopenvdb.4.0.0.dylib in Frameworks */,
 				006D720419952D00008149E2 /* AVFoundation.framework in Frameworks */,
 				006D720519952D00008149E2 /* CoreMedia.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
@@ -166,6 +175,9 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E7E7217D1E675D5B0088765E /* libHalf.12.dylib */,
+				E7E7217B1E675D010088765E /* libtbb.dylib */,
+				E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
@@ -265,6 +277,13 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/openvdb/4.0.0_1/lib,
+					/usr/local/Cellar/boost/1.63.0/lib,
+					"/usr/local/Cellar/tbb/4.4-20161128/lib",
+					/usr/local/Cellar/ilmbase/2.2.0/lib,
+				);
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder_d.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = BRU12;
@@ -292,6 +311,13 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/openvdb/4.0.0_1/lib,
+					/usr/local/Cellar/boost/1.63.0/lib,
+					"/usr/local/Cellar/tbb/4.4-20161128/lib",
+					/usr/local/Cellar/ilmbase/2.2.0/lib,
+				);
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = BRU12;
@@ -327,7 +353,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
+				HEADER_SEARCH_PATHS = (
+					"\"$(CINDER_PATH)/include\"",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -360,7 +390,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\"";
+				HEADER_SEARCH_PATHS = (
+					"\"$(CINDER_PATH)/include\"",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include";
