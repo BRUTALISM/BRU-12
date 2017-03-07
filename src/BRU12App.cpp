@@ -9,6 +9,8 @@
 #include "cinder/Utilities.h"
 #include "cinder/gl/gl.h"
 
+#include <random>
+
 #include "Node.hpp"
 #include "Process.hpp"
 
@@ -38,7 +40,7 @@ public:
 private:
     void recreateVBOs();
     void initializeOpenVDB();
-    void gridToMesh(const FloatGridType& grid, vector<openvdb::Vec3s>& points, vector<openvdb::Vec3I>& triangles);
+    void gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<openvdb::Vec3I>& triangles);
 
     Process process;
 
@@ -87,7 +89,7 @@ void BRU12App::initializeOpenVDB() {
     openvdb::initialize();
 
     FloatGridType grid(1.0f);
-    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f, 80.0f, 20.0f, 10.0f);
+    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f, 80.0f, 20.0f, 20.0f);
     grid.tree().fill(bbox, -1.0f);
 
     openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
@@ -95,29 +97,46 @@ void BRU12App::initializeOpenVDB() {
     linearTransform->preScale(openvdb::Vec3d(0.1, 0.1, 0.1));
     grid.setTransform(linearTransform);
 
-    vector<openvdb::Vec3s> points;
     vector<openvdb::Vec3I> triangles;
-    gridToMesh(grid, points, triangles);
+    vector<Node> nodes;
+    gridToMesh(grid, nodes, triangles);
 
     geom::BufferLayout layout;
-    layout.append(geom::Attrib::POSITION, 3, sizeof(openvdb::Vec3s), 0);
-    auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, points, GL_STATIC_DRAW);
-    volumeMesh = gl::VboMesh::create((uint32_t) points.size(), GL_TRIANGLES, {{ layout, vbo }},
+    layout.append(geom::Attrib::POSITION, 3, sizeof(Node), offsetof(Node, position));
+    layout.append(geom::Attrib::COLOR, 3, sizeof(Node), offsetof(Node, color));
+
+    auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
+    volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
                                      (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
     volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
 }
 
-void BRU12App::gridToMesh(const FloatGridType& grid, vector<openvdb::Vec3s>& points, vector<openvdb::Vec3I>& triangles) {
+// Heavily tweaked doVolumeToMesh from VolumeToMesh.h
+void BRU12App::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<openvdb::Vec3I>& triangles) {
     openvdb::tools::VolumeToMesh mesher(0.0, 0.0, true);
     mesher(grid);
 
     // Preallocate the point list
-    points.clear();
-    points.resize(mesher.pointListSize());
+    nodes.clear();
+    nodes.resize(mesher.pointListSize());
 
-    { // Copy points
-        openvdb::tools::volume_to_mesh_internal::PointListCopy ptnCpy(mesher.pointList(), points);
-        tbb::parallel_for(tbb::blocked_range<size_t>(0, points.size()), ptnCpy);
+    // Make nodes out of points
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        auto colorDistribution = uniform_real_distribution<double>(0.0, 1.0);
+
+        boost::scoped_array<openvdb::Vec3s>& pointList = mesher.pointList();
+        for (size_t i = 0; i < mesher.pointListSize(); i++) {
+            openvdb::Vec3s& position = pointList[i];
+            Node node {
+                .position = vec3(position.x(), position.y(), position.z()),
+//                .color = Color(colorDistribution(gen), colorDistribution(gen), colorDistribution(gen))
+                .color = Color(0.0, 0.0, position.y() / 2.0)
+            };
+            nodes[i] = node;
+        }
+
         mesher.pointList().reset(nullptr);
     }
 
