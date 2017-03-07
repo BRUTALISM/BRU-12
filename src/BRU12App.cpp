@@ -34,6 +34,12 @@ public:
 
     BRU12App();
 
+
+private:
+    void recreateVBOs();
+    void initializeOpenVDB();
+    void gridToMesh(const FloatGridType& grid, vector<openvdb::Vec3s>& points, vector<openvdb::Vec3I>& triangles);
+
     Process process;
 
     CameraPersp camera;
@@ -44,19 +50,16 @@ public:
     gl::VboRef vbo;
     gl::VboRef indexVbo;
     gl::VboMeshRef mesh;
-//    gl::BatchRef meshBatch;
+    //    gl::BatchRef meshBatch;
     gl::VboMeshRef volumeMesh;
 
-private:
-    void recreateVBOs();
-    void initializeOpenVDB();
-    void gridToMesh(const FloatGridType& grid, vector<openvdb::Vec3s>& points, vector<openvdb::Vec3I>& triangles);
+    bool wireframe = false;
 };
 
-BRU12App::BRU12App() : process(NODE_COUNT), camera(WIDTH, HEIGHT, 90, 0.0001, 10000) {}
+BRU12App::BRU12App() : process(NODE_COUNT), camera(WIDTH, HEIGHT, 60, 0.0001, 10000) {}
 
 void BRU12App::setup() {
-    camera.lookAt(vec3(5.0, 0.0, 6.0), vec3(5.0, 0.0, 1.0));
+    camera.lookAt(vec3(4.0, 5.0, 6.0), vec3(4.0, 0.0, 1.0));
 
     auto glsl = gl::GlslProg::Format()
         .vertex(loadAsset("../Resources/vert.glsl"))
@@ -84,8 +87,13 @@ void BRU12App::initializeOpenVDB() {
     openvdb::initialize();
 
     FloatGridType grid(1.0f);
-    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f, 8.0f, 2.0f, 1.0f);
+    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f, 80.0f, 20.0f, 10.0f);
     grid.tree().fill(bbox, -1.0f);
+
+    openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
+    auto linearTransform = openvdb::math::Transform::createLinearTransform(mat);
+    linearTransform->preScale(openvdb::Vec3d(0.1, 0.1, 0.1));
+    grid.setTransform(linearTransform);
 
     vector<openvdb::Vec3s> points;
     vector<openvdb::Vec3I> triangles;
@@ -150,7 +158,7 @@ void BRU12App::recreateVBOs() {
 
     vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STREAM_DRAW);
 
-    // Ovo je jedan nacin da furaš indekse - preko zasebnog index VBO niza, pa da onda nad njim
+    // Ovo je jedan način da furaš indekse - preko zasebnog index VBO niza, pa da onda nad njim
     // radiš mapiranje i memcpy
 //    indexVbo = gl::Vbo::create(GL_ELEMENT_ARRAY_BUFFER, indices);
 //    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
@@ -180,6 +188,11 @@ void BRU12App::keyDown(KeyEvent event) {
         case KeyEvent::KEY_s:
             writeImage(Platform::get()->getHomeDirectory() / ("image_" + toString(time(nullptr)) + ".png"),
                        copyWindowSurface());
+            break;
+        case KeyEvent::KEY_w:
+            wireframe = !wireframe;
+            if (wireframe) gl::enableWireframe();
+            else gl::disableWireframe();
             break;
     }
 }
@@ -226,7 +239,7 @@ void BRU12App::draw() {
 
     {
         gl::ScopedGlslProg glsl(glslProg);
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
         gl::pointSize(4.0f);
 //        gl::draw(mesh);
 
