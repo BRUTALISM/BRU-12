@@ -6,36 +6,30 @@
 using namespace std;
 using namespace ci;
 
-Process::Process(const Params& params) : params(params) {
+const float GRID_BACKGROUND_VALUE = 0.0f;
+const float GRID_FILL_VALUE = 1.0f;
+const float ISO_VALUE = GRID_FILL_VALUE * 0.5;
+const float DECAY_MULTIPLIER = 0.02f;
+
+Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(params), generator(random_device()()) {
     openvdb::initialize();
 
-    FloatGridType grid(1.0f);
+    decayJitter = uniform_real_distribution<double>(1.0, 1.3);
 
     vec3 bounds = params.volumeBounds;
     int subdivision = params.densityPerUnit;
-    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f,
-                            bounds.x * subdivision, bounds.y * subdivision, bounds.z * subdivision);
-    grid.tree().fill(bbox, -1.0f);
+    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f, bounds.x * subdivision, bounds.y * subdivision, bounds.z * subdivision);
+    grid.tree().fill(bbox, GRID_FILL_VALUE);
 
     openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
     auto linearTransform = openvdb::math::Transform::createLinearTransform(mat);
     linearTransform->preScale(openvdb::Vec3d(1.0 / subdivision, 1.0 / subdivision, 1.0 / subdivision));
     grid.setTransform(linearTransform);
 
-    vector<Node> nodes;
-    vector<openvdb::Vec3I> triangles;
-    gridToMesh(grid, nodes, triangles);
-
-    geom::BufferLayout layout;
-    layout.append(geom::Attrib::POSITION, 3, sizeof(Node), offsetof(Node, position));
-    layout.append(geom::Attrib::COLOR, 3, sizeof(Node), offsetof(Node, color));
-
-    auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
-    volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
-                                     (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
-    volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
+    update();
 }
 
+/*
 // Ovo je jedan način da furaš indekse - preko zasebnog index VBO niza, pa da onda nad njim
 // radiš mapiranje i memcpy
 //    indexVbo = gl::Vbo::create(GL_ELEMENT_ARRAY_BUFFER, indices);
@@ -49,10 +43,13 @@ Process::Process(const Params& params) : params(params) {
 
 // Ovo kada hoćeš da iscrtavaš samo tačke, ne treba ti indeks niz
 //mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_POINTS, {{ layout, vbo }});
+*/
 
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
 void Process::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<openvdb::Vec3I>& triangles) {
-    openvdb::tools::VolumeToMesh mesher(0.0, 0.0, true);
+    const double isoValue = ISO_VALUE;
+    const double adaptivity = 0.0;
+    openvdb::tools::VolumeToMesh mesher(isoValue, adaptivity, true);
     mesher(grid);
 
     // Preallocate the point list
@@ -107,6 +104,35 @@ void Process::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<
     }
 }
 
+void Process::decay() {
+    const double boundY = params.volumeBounds.y * params.densityPerUnit;
+    for (auto iterator = grid.beginValueOn(); iterator.test(); ++iterator) {
+        auto value = iterator.getValue();
+        auto coord = iterator.getCoord();
+        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
+//        value -= sqrt(pow(coord.x(), 1.2) + pow(coord.z(), 1.2)) * DECAY_MULTIPLIER * decayJitter(generator);
+
+        if (value < GRID_BACKGROUND_VALUE) {
+            iterator.setActiveState(false);
+        } else {
+            iterator.setValue(value);
+        }
+    }
+}
+
 void Process::update() {
-    //
+    decay();
+
+    vector<Node> nodes;
+    vector<openvdb::Vec3I> triangles;
+    gridToMesh(grid, nodes, triangles);
+
+    geom::BufferLayout layout;
+    layout.append(geom::Attrib::POSITION, 3, sizeof(Node), offsetof(Node, position));
+    layout.append(geom::Attrib::COLOR, 3, sizeof(Node), offsetof(Node, color));
+
+    auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
+    volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+                                     (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
+    volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
 }

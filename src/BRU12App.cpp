@@ -47,7 +47,7 @@ BRU12App::BRU12App() : camera(WIDTH, HEIGHT, 60, 0.0001, 10000) {
 void BRU12App::setup() {
     vec3 bounds = process->getParams().volumeBounds;
     vec3 center = bounds * 0.5f;
-    vec3 eye = center + vec3(center.x - 0.2f * bounds.x, -bounds.y, -bounds.z);
+    vec3 eye = center + vec3(center.x - 0.2f * bounds.x, -bounds.y * 0.8f, -bounds.z);
     camera.lookAt(eye, center);
 
     auto glsl = gl::GlslProg::Format()
@@ -117,7 +117,7 @@ void BRU12App::update() {
 }
 
 void BRU12App::draw() {
-    gl::clear(Color(0.9f, 0.9f, 0.9f));
+    gl::clear(Color(0.1f, 0.1f, 0.1f));
     gl::setMatrices(camera);
 
     {
