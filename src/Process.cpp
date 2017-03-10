@@ -1,31 +1,112 @@
+#include <openvdb/tools/VolumeToMesh.h>
+#include <openvdb/tools/LevelSetSphere.h>
+
 #include "Process.hpp"
-#include <random>
 
 using namespace std;
 using namespace ci;
 
-Process::Process(int nodeCount) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
+Process::Process(const Params& params) : params(params) {
+    openvdb::initialize();
 
-    auto xDistribution = uniform_real_distribution<double>(0.0, 10.0);
-    auto yzDistribution = uniform_real_distribution<double>(0.0, 2.0);
-    auto colorDistribution = uniform_real_distribution<double>(0.0, 1.0);
+    FloatGridType grid(1.0f);
 
-    nodes.reserve(nodeCount);
-    for (int i = 0; i < nodeCount; i++) {
-        Node node;
-        node.position = vec3(xDistribution(gen), yzDistribution(gen), yzDistribution(gen));
-        node.color = Color(colorDistribution(gen), 0.0, 0.0);
-        nodes.push_back(node);
-    }
+    vec3 bounds = params.volumeBounds;
+    int subdivision = params.densityPerUnit;
+    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f,
+                            bounds.x * subdivision, bounds.y * subdivision, bounds.z * subdivision);
+    grid.tree().fill(bbox, -1.0f);
 
+    openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
+    auto linearTransform = openvdb::math::Transform::createLinearTransform(mat);
+    linearTransform->preScale(openvdb::Vec3d(1.0 / subdivision, 1.0 / subdivision, 1.0 / subdivision));
+    grid.setTransform(linearTransform);
+
+    vector<Node> nodes;
+    vector<openvdb::Vec3I> triangles;
+    gridToMesh(grid, nodes, triangles);
+
+    geom::BufferLayout layout;
     layout.append(geom::Attrib::POSITION, 3, sizeof(Node), offsetof(Node, position));
     layout.append(geom::Attrib::COLOR, 3, sizeof(Node), offsetof(Node, color));
+
+    auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
+    volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+                                     (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
+    volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
+}
+
+// Ovo je jedan način da furaš indekse - preko zasebnog index VBO niza, pa da onda nad njim
+// radiš mapiranje i memcpy
+//    indexVbo = gl::Vbo::create(GL_ELEMENT_ARRAY_BUFFER, indices);
+//    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+//                               (uint32_t) indices.size(), GL_UNSIGNED_INT, indexVbo);
+
+// Ovo je drugi, verovatno jednostavniji način da se indeksira
+//    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_LINES, {{ layout, vbo }},
+//                               (uint32_t) indices.size(), GL_UNSIGNED_INT);
+//    mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
+
+// Ovo kada hoćeš da iscrtavaš samo tačke, ne treba ti indeks niz
+//mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_POINTS, {{ layout, vbo }});
+
+// Heavily tweaked doVolumeToMesh from VolumeToMesh.h
+void Process::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<openvdb::Vec3I>& triangles) {
+    openvdb::tools::VolumeToMesh mesher(0.0, 0.0, true);
+    mesher(grid);
+
+    // Preallocate the point list
+    nodes.clear();
+    nodes.resize(mesher.pointListSize());
+
+    // Make nodes out of points
+    {
+        boost::scoped_array<openvdb::Vec3s>& pointList = mesher.pointList();
+        for (size_t i = 0; i < mesher.pointListSize(); i++) {
+            openvdb::Vec3s& position = pointList[i];
+            Node node {
+                .position = vec3(position.x(), position.y(), position.z()),
+                .color = Color(0.0, 0.0, 1.0 - (position.y() / (params.volumeBounds.y)))
+            };
+            nodes[i] = node;
+        }
+
+        mesher.pointList().reset(nullptr);
+    }
+
+    openvdb::tools::PolygonPoolList& polygonPoolList = mesher.polygonPoolList();
+
+    // Preallocate primitive lists
+    {
+        size_t numQuads = 0, numTriangles = 0;
+        for (size_t n = 0, N = mesher.polygonPoolListSize(); n < N; ++n) {
+            openvdb::tools::PolygonPool& polygons = polygonPoolList[n];
+            numTriangles += polygons.numTriangles();
+            numQuads += polygons.numQuads();
+        }
+
+        triangles.clear();
+        triangles.resize(numTriangles + numQuads * 2);
+    }
+
+    // Copy primitives
+    size_t tIdx = 0;
+    for (size_t n = 0, N = mesher.polygonPoolListSize(); n < N; ++n) {
+        openvdb::tools::PolygonPool& polygons = polygonPoolList[n];
+
+        // Convert quads to triangles, since OpenGL doesn't support GL_QUADS anymore
+        for (size_t i = 0, I = polygons.numQuads(); i < I; ++i) {
+            openvdb::Vec4I& quad = polygons.quad(i);
+            triangles[tIdx++] = openvdb::Vec3I(quad.x(), quad.y(), quad.z());
+            triangles[tIdx++] = openvdb::Vec3I(quad.x(), quad.z(), quad.w());
+        }
+
+        for (size_t i = 0, I = polygons.numTriangles(); i < I; ++i) {
+            triangles[tIdx++] = polygons.triangle(i);
+        }
+    }
 }
 
 void Process::update() {
-    for (Node& node : nodes) {
-        node.update(perlin);
-    }
+    //
 }
