@@ -109,8 +109,10 @@ void Process::decay() {
     for (auto iterator = grid.beginValueOn(); iterator.test(); ++iterator) {
         auto value = iterator.getValue();
         auto coord = iterator.getCoord();
-        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
+
+//        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
 //        value -= sqrt(pow(coord.x(), 1.2) + pow(coord.z(), 1.2)) * DECAY_MULTIPLIER * decayJitter(generator);
+        value -= coord.y() * 0.001;
 
         if (value < GRID_BACKGROUND_VALUE) {
             iterator.setActiveState(false);

@@ -9,19 +9,27 @@
 
 #include "Node.hpp"
 #include "Process.hpp"
+#include "FPSCamera.hpp"
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-#define WIDTH 1200
-#define HEIGHT 768
+const int WIDTH = 1200;
+const int HEIGHT = 768;
+const float CAMERA_MOVEMENT_SPEED = 0.2f;
+const float CAMERA_MOUSE_SENSITIVITY = 0.05f;
 
 class BRU12App : public App {
 public:
-    void setup() override;
+    void mouseDrag(MouseEvent event) override;
+    void mouseMove(MouseEvent event) override;
     void mouseDown(MouseEvent event) override;
+    void mouseUp(MouseEvent event) override;
     void keyDown(KeyEvent event) override;
+    void keyUp(KeyEvent event) override;
+
+    void setup() override;
     void update() override;
     void draw() override;
 
@@ -30,26 +38,31 @@ public:
 private:
     shared_ptr<Process> process;
 
-    CameraPersp camera;
+    shared_ptr<FPSCamera> fpsCamera;
     gl::GlslProgRef	glslProg;
 
     bool wireframe = false;
 };
 
-BRU12App::BRU12App() : camera(WIDTH, HEIGHT, 60, 0.0001, 10000) {
+BRU12App::BRU12App() {
     Process::Params params {
         .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
         .densityPerUnit = 10
     };
     process = make_shared<Process>(params);
-}
 
-void BRU12App::setup() {
+    auto cinderCamera = CameraPersp(WIDTH, HEIGHT, 60, 0.0001, 10000);
     vec3 bounds = process->getParams().volumeBounds;
     vec3 center = bounds * 0.5f;
     vec3 eye = center + vec3(center.x - 0.2f * bounds.x, -bounds.y * 0.8f, -bounds.z);
-    camera.lookAt(eye, center);
+    cinderCamera.lookAt(eye, center);
 
+    fpsCamera = make_shared<FPSCamera>(cinderCamera);
+    fpsCamera->setSpeed(CAMERA_MOVEMENT_SPEED);
+    fpsCamera->setMouseSensitivity(CAMERA_MOUSE_SENSITIVITY);
+}
+
+void BRU12App::setup() {
     auto glsl = gl::GlslProg::Format()
         .vertex(loadAsset("../Resources/vert.glsl"))
         .fragment(loadAsset("../Resources/frag.glsl"));
@@ -60,21 +73,39 @@ void BRU12App::setup() {
 }
 
 void BRU12App::mouseDown(MouseEvent event) {
+    fpsCamera->mouseDown(event);
+}
+
+void BRU12App::mouseUp(MouseEvent event) {
+    fpsCamera->mouseUp(event);
+}
+
+void BRU12App::mouseDrag(MouseEvent event) {
+    fpsCamera->mouseDrag(event);
+}
+
+void BRU12App::mouseMove(MouseEvent event) {
     //
 }
 
 void BRU12App::keyDown(KeyEvent event) {
     switch(event.getCode()) {
-        case KeyEvent::KEY_s:
-            writeImage(Platform::get()->getHomeDirectory() / ("image_" + toString(time(nullptr)) + ".png"),
-                       copyWindowSurface());
-            break;
-        case KeyEvent::KEY_w:
+//        case KeyEvent::KEY_s:
+//            writeImage(Platform::get()->getHomeDirectory() / ("image_" + toString(time(nullptr)) + ".png"),
+//                       copyWindowSurface());
+//            break;
+        case KeyEvent::KEY_f:
             wireframe = !wireframe;
             if (wireframe) gl::enableWireframe();
             else gl::disableWireframe();
             break;
     }
+
+    fpsCamera->keyDown(event);
+}
+
+void BRU12App::keyUp(KeyEvent event) {
+    fpsCamera->keyUp(event);
 }
 
 void BRU12App::update() {
@@ -106,7 +137,8 @@ void BRU12App::update() {
 //    nodeVbo->unmap();
      */
 
-    process->update();
+    fpsCamera->update();
+//    process->update();
 
     /*
     const vector<Node>& nodes = process.getNodes();
@@ -118,7 +150,7 @@ void BRU12App::update() {
 
 void BRU12App::draw() {
     gl::clear(Color(0.1f, 0.1f, 0.1f));
-    gl::setMatrices(camera);
+    gl::setMatrices(fpsCamera->getCamera());
 
     {
         gl::ScopedGlslProg glsl(glslProg);

@@ -24,6 +24,7 @@
 		E710EA941E4BA5F20017BB3B /* frag.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA931E4BA5F20017BB3B /* frag.glsl */; };
 		E72497C91E6216A000F2F193 /* Process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E72497C71E6216A000F2F193 /* Process.cpp */; };
 		E732E0831E5E4047009F9059 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E732E0811E5E4047009F9059 /* Node.cpp */; };
+		E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */; };
 		E7E721701E6758720088765E /* libopenvdb.4.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */; };
 		E7E7217C1E675D010088765E /* libtbb.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217B1E675D010088765E /* libtbb.dylib */; };
 		E7E7217E1E675D5B0088765E /* libHalf.12.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217D1E675D5B0088765E /* libHalf.12.dylib */; };
@@ -55,6 +56,8 @@
 		E72497C81E6216A000F2F193 /* Process.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Process.hpp; path = ../src/Process.hpp; sourceTree = "<group>"; };
 		E732E0811E5E4047009F9059 /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = ../src/Node.cpp; sourceTree = "<group>"; };
 		E732E0821E5E4047009F9059 /* Node.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Node.hpp; path = ../src/Node.hpp; sourceTree = "<group>"; };
+		E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FPSCamera.cpp; path = ../src/FPSCamera.cpp; sourceTree = "<group>"; };
+		E7AFCDDB1E74337C005775EA /* FPSCamera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FPSCamera.hpp; path = ../src/FPSCamera.hpp; sourceTree = "<group>"; };
 		E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenvdb.4.0.0.dylib; path = ../../../../../usr/local/Cellar/openvdb/4.0.0_1/lib/libopenvdb.4.0.0.dylib; sourceTree = "<group>"; };
 		E7E7217B1E675D010088765E /* libtbb.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb.dylib; path = "../../../../../usr/local/Cellar/tbb/4.4-20161128/lib/libtbb.dylib"; sourceTree = "<group>"; };
 		E7E7217D1E675D5B0088765E /* libHalf.12.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libHalf.12.dylib; path = ../../../../../usr/local/Cellar/ilmbase/2.2.0/lib/libHalf.12.dylib; sourceTree = "<group>"; };
@@ -100,6 +103,8 @@
 				E732E0821E5E4047009F9059 /* Node.hpp */,
 				E72497C71E6216A000F2F193 /* Process.cpp */,
 				E72497C81E6216A000F2F193 /* Process.hpp */,
+				E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */,
+				E7AFCDDB1E74337C005775EA /* FPSCamera.hpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -250,6 +255,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */,
 				56BD8060178346DEB90E7048 /* BRU12App.cpp in Sources */,
 				E72497C91E6216A000F2F193 /* Process.cpp in Sources */,
 				E732E0831E5E4047009F9059 /* Node.cpp in Sources */,
