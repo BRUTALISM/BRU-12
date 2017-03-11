@@ -18,7 +18,7 @@ using namespace std;
 const int WIDTH = 1200;
 const int HEIGHT = 768;
 const float CAMERA_MOVEMENT_SPEED = 0.2f;
-const float CAMERA_MOUSE_SENSITIVITY = 0.1f;
+const float CAMERA_MOUSE_SENSITIVITY = 0.02f;
 const Color BACKGROUND_COLOR = Color(0.9f, 0.9f, 0.9f);
 
 class BRU12App : public App {

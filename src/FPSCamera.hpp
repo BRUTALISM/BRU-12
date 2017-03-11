@@ -48,7 +48,6 @@ protected:
     ci::vec2 lastMousePos;
     ci::quat orientation;
     bool upIsDown, downIsDown, leftIsDown, rightIsDown, higherIsDown, lowerIsDown;
-    bool mouseIsDown;
     bool cursorHidden;
     bool slower;
 };

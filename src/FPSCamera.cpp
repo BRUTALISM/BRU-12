@@ -12,7 +12,7 @@ FPSCamera::FPSCamera() {
     speed = 1.0f;
     positionVelocity = vec3();
     orientation = quat();
-    upIsDown = downIsDown = leftIsDown = rightIsDown = mouseIsDown = higherIsDown = lowerIsDown = false;
+    upIsDown = downIsDown = leftIsDown = rightIsDown = higherIsDown = lowerIsDown = false;
     mouseSensitivity = 0.1f;
 }
 
@@ -21,7 +21,7 @@ FPSCamera::FPSCamera(const ci::CameraPersp &initialCam) {
     speed = 1.0f;
     positionVelocity = vec3();
     orientation = currentCam.getOrientation();
-    upIsDown = downIsDown = leftIsDown = rightIsDown = mouseIsDown = higherIsDown = lowerIsDown = false;
+    upIsDown = downIsDown = leftIsDown = rightIsDown = higherIsDown = lowerIsDown = false;
     mouseSensitivity = 0.1f;
 }
 
@@ -59,7 +59,7 @@ void FPSCamera::update(bool yContraint, float y) {
     if (higherIsDown) higher();
     if (lowerIsDown) lower();
 
-    if (mouseIsDown) {
+    if (mouseDelta != vec2()) {
         orientation = currentCam.getOrientation();
         auto pitch = -mouseDelta.y * mouseSensitivity;
         auto yaw = -mouseDelta.x * mouseSensitivity;
@@ -71,11 +71,11 @@ void FPSCamera::update(bool yContraint, float y) {
         mouseDelta = vec2();
     }
 
-    quat targetOrientation = mix(currentCam.getOrientation(), orientation, 0.2f);
+    quat targetOrientation = mix(currentCam.getOrientation(), orientation, 0.5f);
     currentCam.setOrientation(targetOrientation);
 
     vec3 eyePoint = currentCam.getEyePoint() + positionVelocity * (slower ? 0.2f : 1.0f);
-    positionVelocity *= 0.7f;
+    positionVelocity *= 0.5f;
     if (yContraint) {
         eyePoint.y = y;
     }
@@ -84,7 +84,6 @@ void FPSCamera::update(bool yContraint, float y) {
 }
 
 void FPSCamera::mouseDown(ci::app::MouseEvent event) {
-    mouseIsDown = true;
     lastMousePos = event.getPos();
     App::get()->hideCursor();
 }
@@ -96,7 +95,6 @@ void FPSCamera::mouseDrag(ci::app::MouseEvent event){
 }
 
 void FPSCamera::mouseUp(ci::app::MouseEvent event) {
-    mouseIsDown = false;
     lastMousePos = event.getPos();
     mouseDelta = vec2();
     App::get()->showCursor();
