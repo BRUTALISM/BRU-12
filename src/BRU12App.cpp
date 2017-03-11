@@ -43,6 +43,7 @@ private:
     gl::GlslProgRef	glslProg;
 
     bool wireframe = false;
+    bool updateProcess = true;
 };
 
 BRU12App::BRU12App() {
@@ -100,6 +101,9 @@ void BRU12App::keyDown(KeyEvent event) {
             if (wireframe) gl::enableWireframe();
             else gl::disableWireframe();
             break;
+        case KeyEvent::KEY_p:
+            updateProcess = !updateProcess;
+            break;
     }
 
     fpsCamera->keyDown(event);
@@ -139,7 +143,10 @@ void BRU12App::update() {
      */
 
     fpsCamera->update();
-//    process->update();
+
+    if (updateProcess) {
+        process->update();
+    }
 
     /*
     const vector<Node>& nodes = process.getNodes();
