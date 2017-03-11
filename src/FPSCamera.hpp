@@ -20,11 +20,11 @@ public:
 
     inline void setMouseSensitivity(float sensitivity) { mouseSensitivity = sensitivity; }
 
-    bool mouseDown(ci::app::MouseEvent event);
-    bool mouseDrag(ci::app::MouseEvent event);
-    bool mouseUp(ci::app::MouseEvent event);
-    bool keyDown(ci::app::KeyEvent event);
-    bool keyUp(ci::app::KeyEvent event);
+    void mouseDown(ci::app::MouseEvent event);
+    void mouseDrag(ci::app::MouseEvent event);
+    void mouseUp(ci::app::MouseEvent event);
+    void keyDown(ci::app::KeyEvent event);
+    void keyUp(ci::app::KeyEvent event);
 
     void registerEvents();
     void unregisterEvents();
@@ -44,11 +44,13 @@ protected:
     ci::vec3 positionVelocity;
     float mouseSensitivity;
     ci::vec2 mouseDelta;
+    ci::vec2 originalMousePos;
     ci::vec2 lastMousePos;
     ci::quat orientation;
     bool upIsDown, downIsDown, leftIsDown, rightIsDown, higherIsDown, lowerIsDown;
     bool mouseIsDown;
     bool cursorHidden;
+    bool slower;
 };
 
 #endif /* FPSCamera_hpp */

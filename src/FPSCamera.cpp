@@ -74,8 +74,8 @@ void FPSCamera::update(bool yContraint, float y) {
     quat targetOrientation = mix(currentCam.getOrientation(), orientation, 0.2f);
     currentCam.setOrientation(targetOrientation);
 
-    vec3 eyePoint = currentCam.getEyePoint() + positionVelocity;
-    positionVelocity *= 0.2f;
+    vec3 eyePoint = currentCam.getEyePoint() + positionVelocity * (slower ? 0.2f : 1.0f);
+    positionVelocity *= 0.7f;
     if (yContraint) {
         eyePoint.y = y;
     }
@@ -83,29 +83,26 @@ void FPSCamera::update(bool yContraint, float y) {
     currentCam.setWorldUp(WORLD_UP);
 }
 
-bool FPSCamera::mouseDown(ci::app::MouseEvent event) {
+void FPSCamera::mouseDown(ci::app::MouseEvent event) {
     mouseIsDown = true;
     lastMousePos = event.getPos();
     App::get()->hideCursor();
-    return false;
 }
 
-bool FPSCamera::mouseDrag(ci::app::MouseEvent event){
+void FPSCamera::mouseDrag(ci::app::MouseEvent event){
     vec2 currentPos = event.getPos();
     mouseDelta = currentPos - lastMousePos;
     lastMousePos = currentPos;
-    return false;
 }
 
-bool FPSCamera::mouseUp(ci::app::MouseEvent event) {
+void FPSCamera::mouseUp(ci::app::MouseEvent event) {
     mouseIsDown = false;
     lastMousePos = event.getPos();
     mouseDelta = vec2();
     App::get()->showCursor();
-    return false;
 }
 
-bool FPSCamera::keyDown(KeyEvent event) {
+void FPSCamera::keyDown(KeyEvent event) {
     int code = event.getCode();
     if (code == 'w' || code == KeyEvent::KEY_UP) upIsDown = true;
     else if (code == 's' || code == KeyEvent::KEY_DOWN) downIsDown = true;
@@ -113,10 +110,10 @@ bool FPSCamera::keyDown(KeyEvent event) {
     else if (code == 'd' || code == KeyEvent::KEY_RIGHT) rightIsDown = true;
     else if (code == 'q') higherIsDown = true;
     else if (code == 'z') lowerIsDown = true;
-    return false;
+    else if (code == KeyEvent::KEY_LSHIFT) slower = true;
 }
 
-bool FPSCamera::keyUp(KeyEvent event) {
+void FPSCamera::keyUp(KeyEvent event) {
     int code = event.getCode();
     if (code == 'w' || code == KeyEvent::KEY_UP) upIsDown = false;
     else if (code == 's' || code == KeyEvent::KEY_DOWN) downIsDown = false;
@@ -124,5 +121,5 @@ bool FPSCamera::keyUp(KeyEvent event) {
     else if (code == 'd' || code == KeyEvent::KEY_RIGHT) rightIsDown = false;
     else if (code == 'q') higherIsDown = false;
     else if (code == 'z') lowerIsDown = false;
-    return false;
+    else if (code == KeyEvent::KEY_LSHIFT) slower = false;
 }
