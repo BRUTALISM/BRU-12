@@ -4,6 +4,9 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+const vec3 WORLD_RIGHT = vec3(1, 0, 0);
+const vec3 WORLD_UP = vec3(0, 1, 0);
+
 FPSCamera::FPSCamera() {
     currentCam = ci::CameraPersp();
     speed = 1.0f;
@@ -57,24 +60,27 @@ void FPSCamera::update(bool yContraint, float y) {
     if (lowerIsDown) lower();
 
     if (mouseIsDown) {
-        timeElapsed = App::get()->getElapsedSeconds() - lastTime;
+        orientation = currentCam.getOrientation();
+        auto pitch = -mouseDelta.y * mouseSensitivity;
+        auto yaw = -mouseDelta.x * mouseSensitivity;
+        auto deltaRotation = quat(vec3(pitch, yaw, 0));
 
-        orientation = quat(vec3(mouseDelta.y * mouseSensitivity, 0.0f, 0.0f)) * currentCam.getOrientation() * quat(vec3(0.0f, -mouseDelta.x * mouseSensitivity, 0.0f));
+        orientation *= deltaRotation;
+        orientation = normalize(orientation);
+
         mouseDelta = vec2();
-
-        lastTime = App::get()->getElapsedSeconds();
-    }
-
-    vec3 eyePoint = currentCam.getEyePoint() + positionVelocity;
-    if (yContraint) {
-        eyePoint.y = y;
     }
 
     quat targetOrientation = mix(currentCam.getOrientation(), orientation, 0.2f);
     currentCam.setOrientation(targetOrientation);
 
-    currentCam.setEyePoint(eyePoint);
+    vec3 eyePoint = currentCam.getEyePoint() + positionVelocity;
     positionVelocity *= 0.2f;
+    if (yContraint) {
+        eyePoint.y = y;
+    }
+    currentCam.setEyePoint(eyePoint);
+    currentCam.setWorldUp(WORLD_UP);
 }
 
 bool FPSCamera::mouseDown(ci::app::MouseEvent event) {

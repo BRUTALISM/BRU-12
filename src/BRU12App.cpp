@@ -19,6 +19,7 @@ const int WIDTH = 1200;
 const int HEIGHT = 768;
 const float CAMERA_MOVEMENT_SPEED = 0.2f;
 const float CAMERA_MOUSE_SENSITIVITY = 0.05f;
+const Color BACKGROUND_COLOR = Color(0.9f, 0.9f, 0.9f);
 
 class BRU12App : public App {
 public:
@@ -149,7 +150,7 @@ void BRU12App::update() {
 }
 
 void BRU12App::draw() {
-    gl::clear(Color(0.1f, 0.1f, 0.1f));
+    gl::clear(BACKGROUND_COLOR);
     gl::setMatrices(fpsCamera->getCamera());
 
     {
