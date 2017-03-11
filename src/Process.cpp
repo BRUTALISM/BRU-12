@@ -8,8 +8,8 @@ using namespace ci;
 
 const float GRID_BACKGROUND_VALUE = 0.0f;
 const float GRID_FILL_VALUE = 1.0f;
-const float ISO_VALUE = GRID_FILL_VALUE * 0.5;
-const float DECAY_MULTIPLIER = 0.02f;
+const float ISO_VALUE = GRID_FILL_VALUE * 0.95;
+const float DECAY_MULTIPLIER = 0.01f;
 
 Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(params), generator(random_device()()) {
     openvdb::initialize();
@@ -19,7 +19,7 @@ Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(par
     vec3 bounds = params.volumeBounds;
     int subdivision = params.densityPerUnit;
     openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f, bounds.x * subdivision, bounds.y * subdivision, bounds.z * subdivision);
-    grid.tree().fill(bbox, GRID_FILL_VALUE);
+    grid.denseFill(bbox, GRID_FILL_VALUE, true);
 
     openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
     auto linearTransform = openvdb::math::Transform::createLinearTransform(mat);
@@ -110,9 +110,7 @@ void Process::decay() {
         auto value = iterator.getValue();
         auto coord = iterator.getCoord();
 
-//        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
-//        value -= sqrt(pow(coord.x(), 1.2) + pow(coord.z(), 1.2)) * DECAY_MULTIPLIER * decayJitter(generator);
-        value -= coord.y() * 0.001;
+        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
 
         if (value < GRID_BACKGROUND_VALUE) {
             iterator.setActiveState(false);
