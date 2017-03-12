@@ -29,22 +29,6 @@ Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(par
     update();
 }
 
-/*
-// Ovo je jedan način da furaš indekse - preko zasebnog index VBO niza, pa da onda nad njim
-// radiš mapiranje i memcpy
-//    indexVbo = gl::Vbo::create(GL_ELEMENT_ARRAY_BUFFER, indices);
-//    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
-//                               (uint32_t) indices.size(), GL_UNSIGNED_INT, indexVbo);
-
-// Ovo je drugi, verovatno jednostavniji način da se indeksira
-//    mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_LINES, {{ layout, vbo }},
-//                               (uint32_t) indices.size(), GL_UNSIGNED_INT);
-//    mesh->bufferIndices(indices.size() * sizeof(uint32_t), indices.data());
-
-// Ovo kada hoćeš da iscrtavaš samo tačke, ne treba ti indeks niz
-//mesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_POINTS, {{ layout, vbo }});
-*/
-
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
 void Process::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<openvdb::Vec3I>& triangles) {
     const double isoValue = ISO_VALUE;

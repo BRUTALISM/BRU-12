@@ -26,7 +26,6 @@ const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
 class BRU12App : public App {
 public:
     void mouseDrag(MouseEvent event) override;
-    void mouseMove(MouseEvent event) override;
     void mouseDown(MouseEvent event) override;
     void mouseUp(MouseEvent event) override;
     void keyDown(KeyEvent event) override;
@@ -96,10 +95,6 @@ void BRU12App::mouseDrag(MouseEvent event) {
     fpsCamera->mouseDrag(event);
 }
 
-void BRU12App::mouseMove(MouseEvent event) {
-    //
-}
-
 void BRU12App::keyDown(KeyEvent event) {
     switch(event.getCode()) {
         case KeyEvent::KEY_i: {
@@ -124,46 +119,11 @@ void BRU12App::keyUp(KeyEvent event) {
 }
 
 void BRU12App::update() {
-    /*
-    // Radi, ali nije najsjajnije jer je interleaved buffer:
-//    auto mappedPosition = mesh->mapAttrib3f(geom::Attrib::POSITION, false);
-////    auto mappedColor = mesh->mapAttrib3f(geom::Attrib::COLOR, false);
-//
-//
-//    for(int i = 0; i < mesh->getNumVertices(); i++) {
-//        vec3& position = *mappedPosition;
-//        mappedPosition->y = position.y + 0.01;
-//        ++mappedPosition;
-//
-////        vec3& color = *mappedColor;
-////        ++mappedColor;
-//    }
-//
-////    mappedColor.unmap();
-//    mappedPosition.unmap();
-
-    // Radi, ali treperi:
-//    auto nodeVbo = mesh->getVertexArrayVbos()[0];
-//    Node* node = (Node*) nodeVbo->mapReplace();
-//    for (int i = 0; i < nodes.size(); i++) {
-//        node->position.y += 0.01;
-//        node++;
-//    }
-//    nodeVbo->unmap();
-     */
-
     fpsCamera->update();
 
     if (updateProcess) {
         process->update();
     }
-
-    /*
-    const vector<Node>& nodes = process.getNodes();
-    auto mappedBuffer = vbo->mapWriteOnly();
-    memcpy(mappedBuffer, nodes.data(), nodes.size() * sizeof(Node));
-    vbo->unmap();
-     */
 }
 
 void BRU12App::draw() {
@@ -172,15 +132,11 @@ void BRU12App::draw() {
 
     {
         gl::ScopedGlslProg glsl(glslProg);
-//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
         gl::pointSize(4.0f);
-//        gl::draw(mesh);
 
         gl::color(0.0f, 0.0f, 0.0f);
         gl::draw(process->getMesh());
     }
-
-//    meshBatch->draw();
 }
 
 void BRU12App::takeScreenshot(int height) {
