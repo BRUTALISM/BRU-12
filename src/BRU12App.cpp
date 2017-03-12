@@ -4,6 +4,7 @@
 #include "cinder/Log.h"
 #include "cinder/Utilities.h"
 #include "cinder/gl/gl.h"
+#include "cinder/gl/Fbo.h"
 
 #include <random>
 
@@ -17,6 +18,7 @@ using namespace std;
 
 const int WIDTH = 1200;
 const int HEIGHT = 768;
+const int SCREENSHOT_HEIGHT = 2880;
 const float CAMERA_MOVEMENT_SPEED = 0.2f;
 const float CAMERA_MOUSE_SENSITIVITY = 0.02f;
 const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
@@ -29,6 +31,8 @@ public:
     void mouseUp(MouseEvent event) override;
     void keyDown(KeyEvent event) override;
     void keyUp(KeyEvent event) override;
+
+    void takeScreenshot(int height);
 
     void setup() override;
     void update() override;
@@ -98,10 +102,10 @@ void BRU12App::mouseMove(MouseEvent event) {
 
 void BRU12App::keyDown(KeyEvent event) {
     switch(event.getCode()) {
-//        case KeyEvent::KEY_s:
-//            writeImage(Platform::get()->getHomeDirectory() / ("image_" + toString(time(nullptr)) + ".png"),
-//                       copyWindowSurface());
-//            break;
+        case KeyEvent::KEY_i: {
+            takeScreenshot(SCREENSHOT_HEIGHT);
+            break;
+        }
         case KeyEvent::KEY_f:
             wireframe = !wireframe;
             if (wireframe) gl::enableWireframe();
@@ -177,6 +181,27 @@ void BRU12App::draw() {
     }
 
 //    meshBatch->draw();
+}
+
+void BRU12App::takeScreenshot(int height) {
+    auto window = getWindow();
+    auto renderer = getWindow()->getRenderer();
+    auto windowSize = window->getSize();
+    auto aspectRatio = ((float) windowSize.x) / windowSize.y;
+    auto bounds = ivec2((int) height * aspectRatio, height);
+    auto framebuffer = gl::Fbo::create(bounds.x, bounds.y);
+
+    auto originalViewport = gl::getViewport();
+    framebuffer->bindFramebuffer();
+    gl::viewport(std::pair<ivec2, ivec2> { ivec2(), bounds });
+    draw();
+
+    auto homeDirectory = Platform::get()->getHomeDirectory();
+    auto imageName = "image_" + toString(time(nullptr)) + ".png";
+    writeImage(homeDirectory / imageName, framebuffer->getColorTexture()->createSource());
+
+    framebuffer->unbindFramebuffer();
+    gl::viewport(originalViewport);
 }
 
 CINDER_APP(BRU12App, RendererGl, [&] (App::Settings *settings) {
