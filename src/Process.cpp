@@ -61,9 +61,10 @@ void Process::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<
         boost::scoped_array<openvdb::Vec3s>& pointList = mesher.pointList();
         for (size_t i = 0; i < mesher.pointListSize(); i++) {
             openvdb::Vec3s& position = pointList[i];
+            auto t = position.y() / params.volumeBounds.y;
             Node node {
                 .position = vec3(position.x(), position.y(), position.z()),
-                .color = Color(0.0, 0.0, 1.0 - (position.y() / (params.volumeBounds.y)))
+                .color = Color(1.0 - t, 0, 0)
             };
             nodes[i] = node;
         }

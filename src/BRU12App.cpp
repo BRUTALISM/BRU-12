@@ -19,7 +19,7 @@ const int WIDTH = 1200;
 const int HEIGHT = 768;
 const float CAMERA_MOVEMENT_SPEED = 0.2f;
 const float CAMERA_MOUSE_SENSITIVITY = 0.02f;
-const Color BACKGROUND_COLOR = Color(0.9f, 0.9f, 0.9f);
+const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
 
 class BRU12App : public App {
 public:
