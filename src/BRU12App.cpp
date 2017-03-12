@@ -62,6 +62,12 @@ BRU12App::BRU12App() {
     fpsCamera = make_shared<FPSCamera>(cinderCamera);
     fpsCamera->setSpeed(CAMERA_MOVEMENT_SPEED);
     fpsCamera->setMouseSensitivity(CAMERA_MOUSE_SENSITIVITY);
+
+    getWindow()->getSignalResize().connect([this] {
+        auto windowSize = getWindow()->getSize();
+        auto aspectRatio = ((float) windowSize.x) / windowSize.y;
+        fpsCamera->getCamera().setAspectRatio(aspectRatio);
+    });
 }
 
 void BRU12App::setup() {
