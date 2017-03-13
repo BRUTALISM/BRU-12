@@ -95,7 +95,9 @@ void Process::decay() {
         auto value = iterator.getValue();
         auto coord = iterator.getCoord();
 
-        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
+//        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
+        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
+        value -= perlin.fBm(coordVec) * DECAY_MULTIPLIER * decayJitter(generator);
 
         if (value < GRID_BACKGROUND_VALUE) {
             iterator.setActiveState(false);

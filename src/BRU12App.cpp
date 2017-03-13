@@ -150,6 +150,7 @@ void BRU12App::takeScreenshot(int height) {
     auto originalViewport = gl::getViewport();
     framebuffer->bindFramebuffer();
     gl::viewport(std::pair<ivec2, ivec2> { ivec2(), bounds });
+
     draw();
 
     auto homeDirectory = Platform::get()->getHomeDirectory();

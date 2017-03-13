@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <openvdb/openvdb.h>
 #include <random>
+#include "cinder/Perlin.h"
 
 #include "Node.hpp"
 
@@ -35,6 +36,7 @@ private:
 
     std::mt19937 generator;
     std::uniform_real_distribution<double> decayJitter;
+    ci::Perlin perlin;
 
     ci::gl::VboMeshRef volumeMesh;
 
