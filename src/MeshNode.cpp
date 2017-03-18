@@ -1,8 +1,8 @@
-#include "Node.hpp"
+#include "MeshNode.hpp"
 
 using namespace ci;
 using namespace ci::app;
 
-void Node::update() {
+void MeshNode::update() {
     // What?
 }

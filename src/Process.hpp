@@ -6,7 +6,7 @@
 #include <random>
 #include "cinder/Perlin.h"
 
-#include "Node.hpp"
+#include "MeshNode.hpp"
 
 typedef openvdb::tree::Tree4<float, 5, 4, 3>::Type FloatTreeType;
 typedef openvdb::Grid<FloatTreeType> FloatGridType;
@@ -23,14 +23,14 @@ public:
     void update();
 
     inline const ci::geom::BufferLayout& getLayout() { return layout; }
-    inline const std::vector<Node>& getNodes() { return nodes; }
+    inline const std::vector<MeshNode>& getNodes() { return nodes; }
     inline const ci::gl::VboMeshRef getMesh() { return volumeMesh; }
     inline const Params& getParams() { return params; }
 
 private:
     FloatGridType grid;
 
-    std::vector<Node> nodes;
+    std::vector<MeshNode> nodes;
     ci::geom::BufferLayout layout;
     Params params;
 
@@ -41,7 +41,7 @@ private:
     ci::gl::VboMeshRef volumeMesh;
 
     void decay();
-    void gridToMesh(const FloatGridType& grid, std::vector<Node>& nodes, std::vector<openvdb::Vec3I>& triangles);
+    void gridToMesh(const FloatGridType& grid, std::vector<MeshNode>& nodes, std::vector<openvdb::Vec3I>& triangles);
 };
 
 #endif /* Process_hpp */

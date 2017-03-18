@@ -1,13 +1,13 @@
-#ifndef Node_hpp
-#define Node_hpp
+#ifndef MeshNode_hpp
+#define MeshNode_hpp
 
 #include <stdio.h>
 
-struct Node {
+struct MeshNode {
     ci::vec3 position;
     ci::Color color;
 
     void update();
 };
 
-#endif /* Node_hpp */
+#endif /* MeshNode_hpp */

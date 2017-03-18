@@ -30,7 +30,7 @@ Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(par
 }
 
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
-void Process::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<openvdb::Vec3I>& triangles) {
+void Process::gridToMesh(const FloatGridType& grid, vector<MeshNode>& nodes, vector<openvdb::Vec3I>& triangles) {
     const double isoValue = ISO_VALUE;
     const double adaptivity = 0.0;
     openvdb::tools::VolumeToMesh mesher(isoValue, adaptivity, true);
@@ -46,7 +46,7 @@ void Process::gridToMesh(const FloatGridType& grid, vector<Node>& nodes, vector<
         for (size_t i = 0; i < mesher.pointListSize(); i++) {
             openvdb::Vec3s& position = pointList[i];
             auto t = position.y() / params.volumeBounds.y;
-            Node node {
+            MeshNode node {
                 .position = vec3(position.x(), position.y(), position.z()),
                 .color = Color(1.0 - t, 0, 0)
             };
@@ -110,13 +110,13 @@ void Process::decay() {
 void Process::update() {
     decay();
 
-    vector<Node> nodes;
+    vector<MeshNode> nodes;
     vector<openvdb::Vec3I> triangles;
     gridToMesh(grid, nodes, triangles);
 
     geom::BufferLayout layout;
-    layout.append(geom::Attrib::POSITION, 3, sizeof(Node), offsetof(Node, position));
-    layout.append(geom::Attrib::COLOR, 3, sizeof(Node), offsetof(Node, color));
+    layout.append(geom::Attrib::POSITION, 3, sizeof(MeshNode), offsetof(MeshNode, position));
+    layout.append(geom::Attrib::COLOR, 3, sizeof(MeshNode), offsetof(MeshNode, color));
 
     auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
     volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},

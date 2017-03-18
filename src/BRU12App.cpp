@@ -8,7 +8,7 @@
 
 #include <random>
 
-#include "Node.hpp"
+#include "MeshNode.hpp"
 #include "Process.hpp"
 #include "FPSCamera.hpp"
 
