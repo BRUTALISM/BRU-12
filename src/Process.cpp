@@ -18,19 +18,24 @@ Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(par
 
     vec3 bounds = params.volumeBounds;
     int subdivision = params.densityPerUnit;
-    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f, bounds.x * subdivision, bounds.y * subdivision, bounds.z * subdivision);
+    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f,
+                            bounds.x * subdivision, bounds.y * subdivision, bounds.z * subdivision);
     grid.denseFill(bbox, GRID_FILL_VALUE, true);
 
     openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
     auto linearTransform = openvdb::math::Transform::createLinearTransform(mat);
-    linearTransform->preScale(openvdb::Vec3d(1.0 / subdivision, 1.0 / subdivision, 1.0 / subdivision));
+    linearTransform->preScale(openvdb::Vec3d(1.0 / subdivision,
+                                             1.0 / subdivision,
+                                             1.0 / subdivision));
     grid.setTransform(linearTransform);
 
     update();
 }
 
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
-void Process::gridToMesh(const VolumeNodeGridType& grid, vector<MeshNode>& nodes, vector<openvdb::Vec3I>& triangles) {
+void Process::gridToMesh(const VolumeNodeGridType& grid,
+                         vector<MeshNode>& nodes,
+                         vector<openvdb::Vec3I>& triangles) {
     const double isoValue = ISO_VALUE;
     const double adaptivity = 0.0;
     openvdb::tools::VolumeToMesh mesher(isoValue, adaptivity, true);

@@ -42,7 +42,9 @@ private:
     ci::gl::VboMeshRef volumeMesh;
 
     void decay();
-    void gridToMesh(const VolumeNodeGridType& grid, std::vector<MeshNode>& nodes, std::vector<openvdb::Vec3I>& triangles);
+    void gridToMesh(const VolumeNodeGridType& grid,
+                    std::vector<MeshNode>& nodes,
+                    std::vector<openvdb::Vec3I>& triangles);
 };
 
 #endif /* Process_hpp */

@@ -4,18 +4,23 @@
 #include <stdio.h>
 #include <math.h>
 
+/// OpenVDB-friendly ValueType-like struct which can be used as a leaf type.
 struct VolumeNode {
     float life;
     ci::Color color;
 
+    // Constructors
     VolumeNode() : life(0), color(0, 0, 0) {}
     VolumeNode(double life) : life(life), color(life, life, life) {}
     VolumeNode(int life) : VolumeNode((float)life) {}
     VolumeNode(double life, ci::Color color) : life(life), color(color) {}
 
+    // Explicit operators needed by OpenVDB
     explicit operator double() const { return life; }
     explicit operator float() const { return life; }
 };
+
+// Arithmetic operators
 
 inline VolumeNode operator+(const VolumeNode& lhs, const VolumeNode& rhs) {
     return VolumeNode(lhs.life + rhs.life, lhs.color + rhs.color);
@@ -23,6 +28,10 @@ inline VolumeNode operator+(const VolumeNode& lhs, const VolumeNode& rhs) {
 
 inline VolumeNode operator-(const VolumeNode& lhs, const VolumeNode& rhs) {
     return VolumeNode(lhs.life - rhs.life, lhs.color - rhs.color);
+}
+
+inline VolumeNode operator-(const VolumeNode& node) {
+    return VolumeNode(-node.life, node.color);
 }
 
 inline VolumeNode operator*(const VolumeNode& lhs, const float rhs) {
@@ -37,10 +46,7 @@ inline VolumeNode operator*(const VolumeNode& lhs, const VolumeNode& rhs) {
     return VolumeNode(lhs.life * rhs.life, lhs.color * rhs.color);
 }
 
-
-inline VolumeNode Abs(const VolumeNode& node) {
-    return VolumeNode(std::abs(node.life), node.color);
-}
+// Comparison operators
 
 inline bool operator>(const VolumeNode& lhs, const VolumeNode& rhs) {
     return lhs.life > rhs.life;
@@ -55,8 +61,10 @@ inline bool operator==(const VolumeNode& lhs, const VolumeNode& rhs) {
     return lhs.life == rhs.life && lhs.color == rhs.color;
 }
 
-inline VolumeNode operator-(const VolumeNode& node) {
-    return VolumeNode(-node.life, node.color);
+// Misc OpenVDB compliance stuff
+
+inline VolumeNode Abs(const VolumeNode& node) {
+    return VolumeNode(std::abs(node.life), node.color);
 }
 
 inline std::ostream& operator<<(std::ostream& lhs, const VolumeNode& rhs) {
