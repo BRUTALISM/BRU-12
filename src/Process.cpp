@@ -30,7 +30,7 @@ Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(par
 }
 
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
-void Process::gridToMesh(const FloatGridType& grid, vector<MeshNode>& nodes, vector<openvdb::Vec3I>& triangles) {
+void Process::gridToMesh(const VolumeNodeGridType& grid, vector<MeshNode>& nodes, vector<openvdb::Vec3I>& triangles) {
     const double isoValue = ISO_VALUE;
     const double adaptivity = 0.0;
     openvdb::tools::VolumeToMesh mesher(isoValue, adaptivity, true);
@@ -95,11 +95,11 @@ void Process::decay() {
         auto value = iterator.getValue();
         auto coord = iterator.getCoord();
 
-//        value -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
-        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
-        value -= perlin.fBm(coordVec) * DECAY_MULTIPLIER * decayJitter(generator);
+        value.life -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
+//        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
+//        value.life -= perlin.fBm(coordVec) * DECAY_MULTIPLIER * decayJitter(generator);
 
-        if (value < GRID_BACKGROUND_VALUE) {
+        if (value.life < GRID_BACKGROUND_VALUE) {
             iterator.setActiveState(false);
         } else {
             iterator.setValue(value);

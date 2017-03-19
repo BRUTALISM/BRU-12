@@ -7,9 +7,10 @@
 #include "cinder/Perlin.h"
 
 #include "MeshNode.hpp"
+#include "VolumeNode.hpp"
 
-typedef openvdb::tree::Tree4<float, 5, 4, 3>::Type FloatTreeType;
-typedef openvdb::Grid<FloatTreeType> FloatGridType;
+typedef openvdb::tree::Tree4<VolumeNode, 5, 4, 3>::Type VolumeNodeTreeType;
+typedef openvdb::Grid<VolumeNodeTreeType> VolumeNodeGridType;
 
 class Process {
 public:
@@ -28,7 +29,7 @@ public:
     inline const Params& getParams() { return params; }
 
 private:
-    FloatGridType grid;
+    VolumeNodeGridType grid;
 
     std::vector<MeshNode> nodes;
     ci::geom::BufferLayout layout;
@@ -41,7 +42,7 @@ private:
     ci::gl::VboMeshRef volumeMesh;
 
     void decay();
-    void gridToMesh(const FloatGridType& grid, std::vector<MeshNode>& nodes, std::vector<openvdb::Vec3I>& triangles);
+    void gridToMesh(const VolumeNodeGridType& grid, std::vector<MeshNode>& nodes, std::vector<openvdb::Vec3I>& triangles);
 };
 
 #endif /* Process_hpp */
