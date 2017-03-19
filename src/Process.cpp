@@ -1,10 +1,12 @@
 #include <openvdb/tools/VolumeToMesh.h>
 #include <openvdb/tools/LevelSetSphere.h>
+#include <openvdb/tools/Interpolation.h>
 
 #include "Process.hpp"
 
 using namespace std;
 using namespace ci;
+using namespace openvdb::tools;
 
 const float GRID_BACKGROUND_VALUE = 0.0f;
 const float GRID_FILL_VALUE = 1.0f;
@@ -38,36 +40,43 @@ void Process::gridToMesh(const VolumeNodeGridType& grid,
                          vector<openvdb::Vec3I>& triangles) {
     const double isoValue = ISO_VALUE;
     const double adaptivity = 0.0;
-    openvdb::tools::VolumeToMesh mesher(isoValue, adaptivity, true);
+    VolumeToMesh mesher(isoValue, adaptivity, true);
     mesher(grid);
 
     // Preallocate the point list
     nodes.clear();
     nodes.resize(mesher.pointListSize());
 
+
     // Make nodes out of points
     {
+        auto accessor = grid.getConstAccessor();
+        GridSampler<VolumeNodeGridType::ConstAccessor, BoxSampler> sampler(accessor,
+                                                                           grid.transform());
         boost::scoped_array<openvdb::Vec3s>& pointList = mesher.pointList();
+
         for (size_t i = 0; i < mesher.pointListSize(); i++) {
             openvdb::Vec3s& position = pointList[i];
-            auto t = position.y() / params.volumeBounds.y;
-            MeshNode node {
+
+            auto volumeNode = sampler.wsSample(position);
+
+            MeshNode meshNode {
                 .position = vec3(position.x(), position.y(), position.z()),
-                .color = Color(1.0 - t, 0, 0)
+                .color = volumeNode.color
             };
-            nodes[i] = node;
+            nodes[i] = meshNode;
         }
 
         mesher.pointList().reset(nullptr);
     }
 
-    openvdb::tools::PolygonPoolList& polygonPoolList = mesher.polygonPoolList();
+    PolygonPoolList& polygonPoolList = mesher.polygonPoolList();
 
     // Preallocate primitive lists
     {
         size_t numQuads = 0, numTriangles = 0;
         for (size_t n = 0, N = mesher.polygonPoolListSize(); n < N; ++n) {
-            openvdb::tools::PolygonPool& polygons = polygonPoolList[n];
+            PolygonPool& polygons = polygonPoolList[n];
             numTriangles += polygons.numTriangles();
             numQuads += polygons.numQuads();
         }
@@ -79,7 +88,7 @@ void Process::gridToMesh(const VolumeNodeGridType& grid,
     // Copy primitives
     size_t tIdx = 0;
     for (size_t n = 0, N = mesher.polygonPoolListSize(); n < N; ++n) {
-        openvdb::tools::PolygonPool& polygons = polygonPoolList[n];
+        PolygonPool& polygons = polygonPoolList[n];
 
         // Convert quads to triangles, since OpenGL doesn't support GL_QUADS anymore
         for (size_t i = 0, I = polygons.numQuads(); i < I; ++i) {
@@ -103,6 +112,9 @@ void Process::decay() {
         value.life -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
 //        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
 //        value.life -= perlin.fBm(coordVec) * DECAY_MULTIPLIER * decayJitter(generator);
+
+        auto t = coord.y() / (params.volumeBounds.y * params.densityPerUnit);
+        value.color = Color(value.color.r, 0.0f, t);
 
         if (value.life < GRID_BACKGROUND_VALUE) {
             iterator.setActiveState(false);
