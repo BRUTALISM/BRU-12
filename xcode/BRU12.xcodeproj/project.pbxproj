@@ -20,15 +20,13 @@
 		56BD8060178346DEB90E7048 /* BRU12App.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD79EB46CC324B4985DD9762 /* BRU12App.cpp */; };
 		7670E6484404493A89BFE10E /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = E6126BC6748348888E0B41C3 /* CinderApp.icns */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		E70D87361E883F8F00FE3A29 /* Queue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E70D87341E883F8F00FE3A29 /* Queue.cpp */; };
-		E70D87391E8842EC00FE3A29 /* Stage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E70D87371E8842EC00FE3A29 /* Stage.cpp */; };
-		E70D873C1E8844A700FE3A29 /* StageProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E70D873A1E8844A700FE3A29 /* StageProcessor.cpp */; };
 		E710EA921E4BA5C90017BB3B /* vert.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA911E4BA5C90017BB3B /* vert.glsl */; };
 		E710EA941E4BA5F20017BB3B /* frag.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA931E4BA5F20017BB3B /* frag.glsl */; };
 		E72497C91E6216A000F2F193 /* Process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E72497C71E6216A000F2F193 /* Process.cpp */; };
 		E732E0831E5E4047009F9059 /* MeshNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E732E0811E5E4047009F9059 /* MeshNode.cpp */; };
 		E745849A1E7D70B9001288C9 /* VolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E74584981E7D70B9001288C9 /* VolumeNode.cpp */; };
 		E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */; };
+		E7DBCBEC1E8B17DB002097DE /* TestPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7DBCBEA1E8B17DB002097DE /* TestPipeline.cpp */; };
 		E7E721701E6758720088765E /* libopenvdb.4.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */; };
 		E7E7217C1E675D010088765E /* libtbb.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217B1E675D010088765E /* libtbb.dylib */; };
 		E7E7217E1E675D5B0088765E /* libHalf.12.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217D1E675D5B0088765E /* libHalf.12.dylib */; };
@@ -54,11 +52,8 @@
 		8D1107320486CEB800E47090 /* BRU12.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BRU12.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD79EB46CC324B4985DD9762 /* BRU12App.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = BRU12App.cpp; sourceTree = "<group>"; };
 		E6126BC6748348888E0B41C3 /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
-		E70D87341E883F8F00FE3A29 /* Queue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Queue.cpp; sourceTree = "<group>"; };
 		E70D87351E883F8F00FE3A29 /* Queue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Queue.hpp; sourceTree = "<group>"; };
-		E70D87371E8842EC00FE3A29 /* Stage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Stage.cpp; sourceTree = "<group>"; };
 		E70D87381E8842EC00FE3A29 /* Stage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stage.hpp; sourceTree = "<group>"; };
-		E70D873A1E8844A700FE3A29 /* StageProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StageProcessor.cpp; sourceTree = "<group>"; };
 		E70D873B1E8844A700FE3A29 /* StageProcessor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StageProcessor.hpp; sourceTree = "<group>"; };
 		E710EA911E4BA5C90017BB3B /* vert.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vert.glsl; path = ../resources/vert.glsl; sourceTree = "<group>"; };
 		E710EA931E4BA5F20017BB3B /* frag.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frag.glsl; path = ../resources/frag.glsl; sourceTree = "<group>"; };
@@ -70,6 +65,8 @@
 		E74584991E7D70B9001288C9 /* VolumeNode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VolumeNode.hpp; sourceTree = "<group>"; };
 		E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FPSCamera.cpp; sourceTree = "<group>"; };
 		E7AFCDDB1E74337C005775EA /* FPSCamera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FPSCamera.hpp; sourceTree = "<group>"; };
+		E7DBCBEA1E8B17DB002097DE /* TestPipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestPipeline.cpp; sourceTree = "<group>"; };
+		E7DBCBEB1E8B17DB002097DE /* TestPipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TestPipeline.hpp; sourceTree = "<group>"; };
 		E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenvdb.4.0.0.dylib; path = ../../../../../usr/local/Cellar/openvdb/4.0.0_1/lib/libopenvdb.4.0.0.dylib; sourceTree = "<group>"; };
 		E7E7217B1E675D010088765E /* libtbb.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb.dylib; path = "../../../../../usr/local/Cellar/tbb/4.4-20161128/lib/libtbb.dylib"; sourceTree = "<group>"; };
 		E7E7217D1E675D5B0088765E /* libHalf.12.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libHalf.12.dylib; path = ../../../../../usr/local/Cellar/ilmbase/2.2.0/lib/libHalf.12.dylib; sourceTree = "<group>"; };
@@ -120,6 +117,8 @@
 				E7AFCDDB1E74337C005775EA /* FPSCamera.hpp */,
 				E74584981E7D70B9001288C9 /* VolumeNode.cpp */,
 				E74584991E7D70B9001288C9 /* VolumeNode.hpp */,
+				E7DBCBEA1E8B17DB002097DE /* TestPipeline.cpp */,
+				E7DBCBEB1E8B17DB002097DE /* TestPipeline.hpp */,
 			);
 			name = Source;
 			path = "/Users/vladimir/Projects/BRU-12/xcode/../src";
@@ -208,11 +207,8 @@
 		E70D87331E883EEF00FE3A29 /* beton */ = {
 			isa = PBXGroup;
 			children = (
-				E70D87341E883F8F00FE3A29 /* Queue.cpp */,
 				E70D87351E883F8F00FE3A29 /* Queue.hpp */,
-				E70D87371E8842EC00FE3A29 /* Stage.cpp */,
 				E70D87381E8842EC00FE3A29 /* Stage.hpp */,
-				E70D873A1E8844A700FE3A29 /* StageProcessor.cpp */,
 				E70D873B1E8844A700FE3A29 /* StageProcessor.hpp */,
 			);
 			path = beton;
@@ -287,11 +283,9 @@
 				E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */,
 				56BD8060178346DEB90E7048 /* BRU12App.cpp in Sources */,
 				E72497C91E6216A000F2F193 /* Process.cpp in Sources */,
-				E70D87361E883F8F00FE3A29 /* Queue.cpp in Sources */,
 				E745849A1E7D70B9001288C9 /* VolumeNode.cpp in Sources */,
-				E70D87391E8842EC00FE3A29 /* Stage.cpp in Sources */,
+				E7DBCBEC1E8B17DB002097DE /* TestPipeline.cpp in Sources */,
 				E732E0831E5E4047009F9059 /* MeshNode.cpp in Sources */,
-				E70D873C1E8844A700FE3A29 /* StageProcessor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
