@@ -12,24 +12,15 @@ namespace beton {
     /// separate thread.
     template <typename TIn, typename TOut>
     class Stage {
-        using InOutProcessor = StageProcessor<TIn, TOut>;
-
         std::vector<std::thread> threads;
-        std::vector<std::shared_ptr<InOutProcessor>> processors;
+        std::vector<std::shared_ptr<StageProcessor<TIn, TOut>>> processors;
         std::atomic<bool> running;
 
         QueueRef<TIn> inQueue;
         QueueRef<TOut> outQueue;
 
-        void loop(InOutProcessor& processor) {
-            while (running) {
-                // Wait with timeout, otherwise thread can't be joined.
-                boost::optional<TIn> dataIn = inQueue->tryPop(std::chrono::milliseconds(1000));
+        void loop(StageProcessor<TIn, TOut>& processor) {
 
-                if (dataIn) {
-                    outQueue->push(processor.process(*dataIn));
-                }
-            }
         }
 
     public:
@@ -47,11 +38,18 @@ namespace beton {
         const QueueRef<TIn> getInQueue() { return inQueue; }
         const QueueRef<TOut> getOutQueue() { return outQueue; }
 
-        void pushProcessor(std::shared_ptr<InOutProcessor> processor) {
+        void pushProcessor(std::shared_ptr<StageProcessor<TIn, TOut>> processor) {
             processors.push_back(processor);
+            threads.push_back(std::thread([&] () {
+                while (running) {
+                    // Wait with timeout, otherwise thread can't be joined.
+                    boost::optional<TIn> dataIn = inQueue->tryPop(std::chrono::milliseconds(1000));
 
-            auto thread = std::thread(&Stage<TIn, TOut>::loop, this, processor);
-            threads.push_back(thread);
+                    if (dataIn) {
+                        outQueue->push(processor->process(*dataIn));
+                    }
+                }
+            }));
         }
     };
 }

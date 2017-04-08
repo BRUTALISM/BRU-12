@@ -11,6 +11,7 @@
 #include "MeshNode.hpp"
 #include "Process.hpp"
 #include "FPSCamera.hpp"
+#include "TestPipeline.hpp"
 
 using namespace ci;
 using namespace ci::app;
@@ -47,6 +48,8 @@ private:
 
     bool wireframe = false;
     bool updateProcess = true;
+
+    TestPipeline testPipeline;
 };
 
 BRU12App::BRU12App() {

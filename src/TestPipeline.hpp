@@ -6,14 +6,15 @@
 #include "Queue.hpp"
 
 struct DataIn {
-    int number;
+    const int number;
 };
 
 struct DataOut {
-    std::string string;
+    const std::string string;
+    const std::thread::id threadId;
 };
 
-class TestStageProcessor : beton::StageProcessor<DataIn, DataOut> {
+class TestStageProcessor : public beton::StageProcessor<DataIn, DataOut> {
     DataOut process(DataIn& data);
 };
 
@@ -22,6 +23,7 @@ class TestPipeline {
     beton::QueueRef<DataOut> outQueue;
     beton::Stage<DataIn, DataOut> stage;
 
+public:
     TestPipeline();
 };
 
