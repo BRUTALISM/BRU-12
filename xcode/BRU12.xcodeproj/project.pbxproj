@@ -30,6 +30,7 @@
 		E7E721701E6758720088765E /* libopenvdb.4.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */; };
 		E7E7217C1E675D010088765E /* libtbb.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217B1E675D010088765E /* libtbb.dylib */; };
 		E7E7217E1E675D5B0088765E /* libHalf.12.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217D1E675D5B0088765E /* libHalf.12.dylib */; };
+		E7EDF4271E9AA50B000CBD89 /* BRU12Pipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7EDF4251E9AA50B000CBD89 /* BRU12Pipeline.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,8 @@
 		E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenvdb.4.0.0.dylib; path = ../../../../../usr/local/Cellar/openvdb/4.0.0_1/lib/libopenvdb.4.0.0.dylib; sourceTree = "<group>"; };
 		E7E7217B1E675D010088765E /* libtbb.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libtbb.dylib; path = "../../../../../usr/local/Cellar/tbb/4.4-20161128/lib/libtbb.dylib"; sourceTree = "<group>"; };
 		E7E7217D1E675D5B0088765E /* libHalf.12.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libHalf.12.dylib; path = ../../../../../usr/local/Cellar/ilmbase/2.2.0/lib/libHalf.12.dylib; sourceTree = "<group>"; };
+		E7EDF4251E9AA50B000CBD89 /* BRU12Pipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BRU12Pipeline.cpp; sourceTree = "<group>"; };
+		E7EDF4261E9AA50B000CBD89 /* BRU12Pipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = BRU12Pipeline.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +110,7 @@
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				E7EDF4241E9AA486000CBD89 /* Pipeline */,
 				E70D87331E883EEF00FE3A29 /* beton */,
 				DD79EB46CC324B4985DD9762 /* BRU12App.cpp */,
 				E732E0811E5E4047009F9059 /* MeshNode.cpp */,
@@ -214,6 +218,16 @@
 			path = beton;
 			sourceTree = "<group>";
 		};
+		E7EDF4241E9AA486000CBD89 /* Pipeline */ = {
+			isa = PBXGroup;
+			children = (
+				E7EDF4251E9AA50B000CBD89 /* BRU12Pipeline.cpp */,
+				E7EDF4261E9AA50B000CBD89 /* BRU12Pipeline.hpp */,
+			);
+			name = Pipeline;
+			path = pipeline;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -286,6 +300,7 @@
 				E745849A1E7D70B9001288C9 /* VolumeNode.cpp in Sources */,
 				E7DBCBEC1E8B17DB002097DE /* TestPipeline.cpp in Sources */,
 				E732E0831E5E4047009F9059 /* MeshNode.cpp in Sources */,
+				E7EDF4271E9AA50B000CBD89 /* BRU12Pipeline.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -47,7 +47,6 @@ void Process::gridToMesh(const VolumeNodeGridType& grid,
     nodes.clear();
     nodes.resize(mesher.pointListSize());
 
-
     // Make nodes out of points
     {
         auto accessor = grid.getConstAccessor();

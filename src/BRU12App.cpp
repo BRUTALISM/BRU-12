@@ -9,9 +9,9 @@
 #include <random>
 
 #include "MeshNode.hpp"
-#include "Process.hpp"
+//#include "Process.hpp"
 #include "FPSCamera.hpp"
-#include "TestPipeline.hpp"
+#include "BRU12Pipeline.hpp"
 
 using namespace ci;
 using namespace ci::app;
@@ -41,7 +41,7 @@ public:
     BRU12App();
 
 private:
-    shared_ptr<Process> process;
+//    shared_ptr<Process> process;
 
     shared_ptr<FPSCamera> fpsCamera;
     gl::GlslProgRef	glslProg;
@@ -49,18 +49,19 @@ private:
     bool wireframe = false;
     bool updateProcess = true;
 
-    TestPipeline testPipeline;
+    BRU12Pipeline pipeline;
+    ci::gl::VboMeshRef latestMesh;
 };
 
 BRU12App::BRU12App() {
-    Process::Params params {
-        .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
-        .densityPerUnit = 10
-    };
-    process = make_shared<Process>(params);
+//    Process::Params params {
+//        .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
+//        .densityPerUnit = 10
+//    };
+//    process = make_shared<Process>(params);
 
     auto cinderCamera = CameraPersp(WIDTH, HEIGHT, 60, 0.0001, 10000);
-    vec3 bounds = process->getParams().volumeBounds;
+    vec3 bounds = vec3(10.0f, 10.0f, 10.0f);
     vec3 center = bounds * 0.5f;
     vec3 eye = center + vec3(center.x - 0.2f * bounds.x, -bounds.y * 0.8f, -bounds.z);
     cinderCamera.lookAt(eye, center);
@@ -124,8 +125,16 @@ void BRU12App::keyUp(KeyEvent event) {
 void BRU12App::update() {
     fpsCamera->update();
 
-    if (updateProcess) {
-        process->update();
+//    if (updateProcess) {
+//        process->update();
+//    }
+
+    auto& outQueue = pipeline.getOutputQueue();
+    if (!outQueue->isEmpty()) {
+        auto result = outQueue->tryPop(chrono::milliseconds(1));
+        if (result) {
+            latestMesh = (*result).mesh;
+        }
     }
 }
 
@@ -133,12 +142,12 @@ void BRU12App::draw() {
     gl::clear(BACKGROUND_COLOR);
     gl::setMatrices(fpsCamera->getCamera());
 
-    {
+    if (latestMesh.get()) {
         gl::ScopedGlslProg glsl(glslProg);
         gl::pointSize(4.0f);
 
         gl::color(0.0f, 0.0f, 0.0f);
-        gl::draw(process->getMesh());
+        gl::draw(latestMesh);
     }
 }
 

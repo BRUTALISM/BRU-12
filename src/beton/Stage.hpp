@@ -19,10 +19,6 @@ namespace beton {
         QueueRef<TIn> inQueue;
         QueueRef<TOut> outQueue;
 
-        void loop(StageProcessor<TIn, TOut>& processor) {
-
-        }
-
     public:
         Stage(QueueRef<TIn> inQueue, QueueRef<TOut> outQueue) :
             inQueue(inQueue), outQueue(outQueue), running(true) {}
