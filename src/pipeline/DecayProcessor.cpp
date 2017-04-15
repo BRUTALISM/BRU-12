@@ -1,44 +1,19 @@
+#include "DecayProcessor.hpp"
+
+#include <openvdb/openvdb.h>
 #include <openvdb/tools/VolumeToMesh.h>
 #include <openvdb/tools/LevelSetSphere.h>
 #include <openvdb/tools/Interpolation.h>
-
-#include "Process.hpp"
 
 using namespace std;
 using namespace ci;
 using namespace openvdb::tools;
 
-const float GRID_BACKGROUND_VALUE = 0.0f;
-const float GRID_FILL_VALUE = 1.0f;
-const float ISO_VALUE = GRID_FILL_VALUE * 0.95;
-const float DECAY_MULTIPLIER = 0.01f;
-
-Process::Process(const Params& params) : grid(GRID_BACKGROUND_VALUE), params(params), generator(random_device()()) {
-    openvdb::initialize();
-
-    decayJitter = uniform_real_distribution<double>(1.0, 1.3);
-
-    vec3 bounds = params.volumeBounds;
-    int subdivision = params.densityPerUnit;
-    openvdb::CoordBBox bbox(0.0f, 0.0f, 0.0f,
-                            bounds.x * subdivision, bounds.y * subdivision, bounds.z * subdivision);
-    grid.denseFill(bbox, GRID_FILL_VALUE, true);
-
-    openvdb::math::Mat4d mat = openvdb::math::Mat4d::identity();
-    auto linearTransform = openvdb::math::Transform::createLinearTransform(mat);
-    linearTransform->preScale(openvdb::Vec3d(1.0 / subdivision,
-                                             1.0 / subdivision,
-                                             1.0 / subdivision));
-    grid.setTransform(linearTransform);
-
-    update();
-}
-
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
-void Process::gridToMesh(const VolumeNodeGridType& grid,
-                         vector<MeshNode>& nodes,
-                         vector<openvdb::Vec3I>& triangles) {
-    const double isoValue = ISO_VALUE;
+void gridToMesh(const VolumeNodeGridType& grid,
+                vector<MeshNode>& nodes,
+                vector<openvdb::Vec3I>& triangles,
+                const float isoValue) {
     const double adaptivity = 0.0;
     VolumeToMesh mesher(isoValue, adaptivity, true);
     mesher(grid);
@@ -102,40 +77,43 @@ void Process::gridToMesh(const VolumeNodeGridType& grid,
     }
 }
 
-void Process::decay() {
-    const double boundY = params.volumeBounds.y * params.densityPerUnit;
-    for (auto iterator = grid.beginValueOn(); iterator.test(); ++iterator) {
+BRU12Pipeline::Output DecayProcessor::process(BRU12Pipeline::Input& input) {
+    const double boundY = input.params.volumeBounds.y * input.params.densityPerUnit;
+    for (auto iterator = input.grid.beginValueOn(); iterator.test(); ++iterator) {
         auto value = iterator.getValue();
         auto coord = iterator.getCoord();
 
-        value.life -= ((boundY - coord.y()) / boundY) * DECAY_MULTIPLIER * decayJitter(generator);
+        value.life -= ((boundY - coord.y()) / boundY) *
+            input.params.decayMultiplier *
+            decayJitter(generator);
+
 //        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
 //        value.life -= perlin.fBm(coordVec) * DECAY_MULTIPLIER * decayJitter(generator);
 
-        auto t = coord.y() / (params.volumeBounds.y * params.densityPerUnit);
+        auto t = coord.y() / (input.params.volumeBounds.y * input.params.densityPerUnit);
         value.color = Color(value.color.r, 0.0f, t);
 
-        if (value.life < GRID_BACKGROUND_VALUE) {
+        if (value.life < input.params.gridBackgroundValue) {
             iterator.setActiveState(false);
         } else {
             iterator.setValue(value);
         }
     }
-}
-
-void Process::update() {
-    decay();
 
     vector<MeshNode> nodes;
     vector<openvdb::Vec3I> triangles;
-    gridToMesh(grid, nodes, triangles);
+    gridToMesh(input.grid, nodes, triangles, input.params.isoValue);
 
     geom::BufferLayout layout;
     layout.append(geom::Attrib::POSITION, 3, sizeof(MeshNode), offsetof(MeshNode, position));
     layout.append(geom::Attrib::COLOR, 3, sizeof(MeshNode), offsetof(MeshNode, color));
 
     auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
-    volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+    auto volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
                                      (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
     volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
+
+    return BRU12Pipeline::Output {
+        .mesh = volumeMesh
+    };
 }

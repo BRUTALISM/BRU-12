@@ -22,7 +22,7 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		E710EA921E4BA5C90017BB3B /* vert.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA911E4BA5C90017BB3B /* vert.glsl */; };
 		E710EA941E4BA5F20017BB3B /* frag.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA931E4BA5F20017BB3B /* frag.glsl */; };
-		E72497C91E6216A000F2F193 /* Process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E72497C71E6216A000F2F193 /* Process.cpp */; };
+		E731FA781E9C6C3600A74197 /* DecayProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E731FA761E9C6C3600A74197 /* DecayProcessor.cpp */; };
 		E732E0831E5E4047009F9059 /* MeshNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E732E0811E5E4047009F9059 /* MeshNode.cpp */; };
 		E745849A1E7D70B9001288C9 /* VolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E74584981E7D70B9001288C9 /* VolumeNode.cpp */; };
 		E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */; };
@@ -58,8 +58,8 @@
 		E70D873B1E8844A700FE3A29 /* StageProcessor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StageProcessor.hpp; sourceTree = "<group>"; };
 		E710EA911E4BA5C90017BB3B /* vert.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vert.glsl; path = ../resources/vert.glsl; sourceTree = "<group>"; };
 		E710EA931E4BA5F20017BB3B /* frag.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frag.glsl; path = ../resources/frag.glsl; sourceTree = "<group>"; };
-		E72497C71E6216A000F2F193 /* Process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Process.cpp; sourceTree = "<group>"; };
-		E72497C81E6216A000F2F193 /* Process.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Process.hpp; sourceTree = "<group>"; };
+		E731FA761E9C6C3600A74197 /* DecayProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DecayProcessor.cpp; sourceTree = "<group>"; };
+		E731FA771E9C6C3600A74197 /* DecayProcessor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DecayProcessor.hpp; sourceTree = "<group>"; };
 		E732E0811E5E4047009F9059 /* MeshNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshNode.cpp; sourceTree = "<group>"; };
 		E732E0821E5E4047009F9059 /* MeshNode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MeshNode.hpp; sourceTree = "<group>"; };
 		E74584981E7D70B9001288C9 /* VolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VolumeNode.cpp; sourceTree = "<group>"; };
@@ -115,8 +115,6 @@
 				DD79EB46CC324B4985DD9762 /* BRU12App.cpp */,
 				E732E0811E5E4047009F9059 /* MeshNode.cpp */,
 				E732E0821E5E4047009F9059 /* MeshNode.hpp */,
-				E72497C71E6216A000F2F193 /* Process.cpp */,
-				E72497C81E6216A000F2F193 /* Process.hpp */,
 				E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */,
 				E7AFCDDB1E74337C005775EA /* FPSCamera.hpp */,
 				E74584981E7D70B9001288C9 /* VolumeNode.cpp */,
@@ -223,6 +221,8 @@
 			children = (
 				E7EDF4251E9AA50B000CBD89 /* BRU12Pipeline.cpp */,
 				E7EDF4261E9AA50B000CBD89 /* BRU12Pipeline.hpp */,
+				E731FA761E9C6C3600A74197 /* DecayProcessor.cpp */,
+				E731FA771E9C6C3600A74197 /* DecayProcessor.hpp */,
 			);
 			name = Pipeline;
 			path = pipeline;
@@ -295,8 +295,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */,
+				E731FA781E9C6C3600A74197 /* DecayProcessor.cpp in Sources */,
 				56BD8060178346DEB90E7048 /* BRU12App.cpp in Sources */,
-				E72497C91E6216A000F2F193 /* Process.cpp in Sources */,
 				E745849A1E7D70B9001288C9 /* VolumeNode.cpp in Sources */,
 				E7DBCBEC1E8B17DB002097DE /* TestPipeline.cpp in Sources */,
 				E732E0831E5E4047009F9059 /* MeshNode.cpp in Sources */,

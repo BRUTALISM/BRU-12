@@ -9,7 +9,6 @@
 #include <random>
 
 #include "MeshNode.hpp"
-//#include "Process.hpp"
 #include "FPSCamera.hpp"
 #include "BRU12Pipeline.hpp"
 
@@ -23,6 +22,15 @@ const int SCREENSHOT_HEIGHT = 2880;
 const float CAMERA_MOVEMENT_SPEED = 0.2f;
 const float CAMERA_MOUSE_SENSITIVITY = 0.02f;
 const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
+
+const BRU12Pipeline::Params PIPELINE_PARAMS = {
+    .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
+    .densityPerUnit = 10,
+    .gridBackgroundValue = 0.0f,
+    .gridFillValue = 1.0f,
+    .isoValue = 0.95f,
+    .decayMultiplier = 0.01f
+};
 
 class BRU12App : public App {
 public:
@@ -41,8 +49,6 @@ public:
     BRU12App();
 
 private:
-//    shared_ptr<Process> process;
-
     shared_ptr<FPSCamera> fpsCamera;
     gl::GlslProgRef	glslProg;
 
@@ -53,13 +59,7 @@ private:
     ci::gl::VboMeshRef latestMesh;
 };
 
-BRU12App::BRU12App() {
-//    Process::Params params {
-//        .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
-//        .densityPerUnit = 10
-//    };
-//    process = make_shared<Process>(params);
-
+BRU12App::BRU12App() : pipeline(PIPELINE_PARAMS) {
     auto cinderCamera = CameraPersp(WIDTH, HEIGHT, 60, 0.0001, 10000);
     vec3 bounds = vec3(10.0f, 10.0f, 10.0f);
     vec3 center = bounds * 0.5f;
@@ -85,6 +85,8 @@ void BRU12App::setup() {
 
     gl::enableDepthWrite();
     gl::enableDepthRead();
+
+    pipeline.nextIteration();
 }
 
 void BRU12App::mouseDown(MouseEvent event) {
@@ -125,15 +127,13 @@ void BRU12App::keyUp(KeyEvent event) {
 void BRU12App::update() {
     fpsCamera->update();
 
-//    if (updateProcess) {
-//        process->update();
-//    }
-
     auto& outQueue = pipeline.getOutputQueue();
     if (!outQueue->isEmpty()) {
         auto result = outQueue->tryPop(chrono::milliseconds(1));
         if (result) {
+            cout << "Took a mesh from the out queue" << endl;
             latestMesh = (*result).mesh;
+            pipeline.nextIteration();
         }
     }
 }
@@ -144,9 +144,6 @@ void BRU12App::draw() {
 
     if (latestMesh.get()) {
         gl::ScopedGlslProg glsl(glslProg);
-        gl::pointSize(4.0f);
-
-        gl::color(0.0f, 0.0f, 0.0f);
         gl::draw(latestMesh);
     }
 }

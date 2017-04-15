@@ -57,8 +57,9 @@ namespace beton {
             condition.notify_one();
         }
 
-        bool isEmpty() const {
-            std::unique_lock<std::mutex> lock;
+        bool isEmpty() {
+            std::unique_lock<std::mutex> lock(mutex);
+
             return queue.empty();
         }
     };
