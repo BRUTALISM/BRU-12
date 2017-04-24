@@ -5,7 +5,7 @@ using namespace std;
 using namespace ci;
 
 BRU12Pipeline::BRU12Pipeline(const Params& params) :
-    params(params), grid(params.gridFillValue), inQueue(make_shared<beton::Queue<Input>>()),
+    params(params), grid(params.gridBackgroundValue), inQueue(make_shared<beton::Queue<Input>>()),
     outQueue(make_shared<beton::Queue<Output>>()), stage(inQueue, outQueue) {
         // Initialize the grid
         openvdb::initialize();

@@ -5,8 +5,11 @@
 #include <openvdb/tools/LevelSetSphere.h>
 #include <openvdb/tools/Interpolation.h>
 
+#include "MeshNode.hpp"
+
 using namespace std;
 using namespace ci;
+using namespace ci::gl;
 using namespace openvdb::tools;
 
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
@@ -31,14 +34,10 @@ void gridToMesh(const VolumeNodeGridType& grid,
 
         for (size_t i = 0; i < mesher.pointListSize(); i++) {
             openvdb::Vec3s& position = pointList[i];
-
-            auto volumeNode = sampler.wsSample(position);
-
-            MeshNode meshNode {
+            nodes[i] = {
                 .position = vec3(position.x(), position.y(), position.z()),
-                .color = volumeNode.color
+                .color = sampler.wsSample(position).color
             };
-            nodes[i] = meshNode;
         }
 
         mesher.pointList().reset(nullptr);
@@ -83,12 +82,12 @@ BRU12Pipeline::Output DecayProcessor::process(BRU12Pipeline::Input& input) {
         auto value = iterator.getValue();
         auto coord = iterator.getCoord();
 
-        value.life -= ((boundY - coord.y()) / boundY) *
-            input.params.decayMultiplier *
+        value.life -= ((boundY - coord.y()) / boundY) * input.params.decayMultiplier *
             decayJitter(generator);
 
 //        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
-//        value.life -= perlin.fBm(coordVec) * DECAY_MULTIPLIER * decayJitter(generator);
+//        value.life -= perlin.fBm(coordVec) * input.params.decayMultiplier *
+//            decayJitter(generator);
 
         auto t = coord.y() / (input.params.volumeBounds.y * input.params.densityPerUnit);
         value.color = Color(value.color.r, 0.0f, t);
@@ -102,18 +101,12 @@ BRU12Pipeline::Output DecayProcessor::process(BRU12Pipeline::Input& input) {
 
     vector<MeshNode> nodes;
     vector<openvdb::Vec3I> triangles;
+
     gridToMesh(input.grid, nodes, triangles, input.params.isoValue);
 
-    geom::BufferLayout layout;
-    layout.append(geom::Attrib::POSITION, 3, sizeof(MeshNode), offsetof(MeshNode, position));
-    layout.append(geom::Attrib::COLOR, 3, sizeof(MeshNode), offsetof(MeshNode, color));
-
-    auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
-    auto volumeMesh = gl::VboMesh::create((uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
-                                     (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
-    volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
 
     return BRU12Pipeline::Output {
-        .mesh = volumeMesh
+        .nodes = move(nodes),
+        .triangles = move(triangles)
     };
 }
