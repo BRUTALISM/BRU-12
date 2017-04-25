@@ -32,7 +32,6 @@ const BRU12Pipeline::Params PIPELINE_PARAMS = {
     .decayMultiplier = 0.005f
 };
 
-
 class BRU12App : public App {
 public:
     void mouseDrag(MouseEvent event) override;
@@ -104,10 +103,9 @@ void BRU12App::mouseDrag(MouseEvent event) {
 
 void BRU12App::keyDown(KeyEvent event) {
     switch(event.getCode()) {
-        case KeyEvent::KEY_i: {
+        case KeyEvent::KEY_i:
             takeScreenshot(SCREENSHOT_HEIGHT);
             break;
-        }
         case KeyEvent::KEY_f:
             wireframe = !wireframe;
             if (wireframe) gl::enableWireframe();
@@ -115,6 +113,9 @@ void BRU12App::keyDown(KeyEvent event) {
             break;
         case KeyEvent::KEY_p:
             updateProcess = !updateProcess;
+            if (updateProcess) {
+                pipeline.nextIteration();
+            }
             break;
     }
 
@@ -152,7 +153,9 @@ void BRU12App::update() {
 
             cout << nodes.size() << " nodes, " << triangles.size() << " triangles" << endl;
 
-            pipeline.nextIteration();
+            if (updateProcess) {
+                pipeline.nextIteration();
+            }
         }
     }
 }
