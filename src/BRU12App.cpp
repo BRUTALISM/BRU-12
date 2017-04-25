@@ -25,12 +25,13 @@ const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
 
 const BRU12Pipeline::Params PIPELINE_PARAMS = {
     .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
-    .densityPerUnit = 10,
+    .densityPerUnit = 3,
     .gridBackgroundValue = 0.0f,
     .gridFillValue = 1.0f,
     .isoValue = 0.95f,
-    .decayMultiplier = 0.01f
+    .decayMultiplier = 0.005f
 };
+
 
 class BRU12App : public App {
 public:
@@ -148,6 +149,9 @@ void BRU12App::update() {
             volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
 
             latestMesh = volumeMesh;
+
+            cout << nodes.size() << " nodes, " << triangles.size() << " triangles" << endl;
+
             pipeline.nextIteration();
         }
     }
