@@ -79,8 +79,8 @@ BRU12App::BRU12App() : pipeline(PIPELINE_PARAMS) {
 
 void BRU12App::setup() {
     auto glsl = gl::GlslProg::Format()
-        .vertex(loadAsset("../Resources/vert.glsl"))
-        .fragment(loadAsset("../Resources/frag.glsl"));
+        .vertex(loadAsset("vert.glsl"))
+        .fragment(loadAsset("frag.glsl"));
     glslProg = gl::GlslProg::create(glsl);
 
     gl::enableDepthWrite();

@@ -20,11 +20,10 @@
 		56BD8060178346DEB90E7048 /* BRU12App.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DD79EB46CC324B4985DD9762 /* BRU12App.cpp */; };
 		7670E6484404493A89BFE10E /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = E6126BC6748348888E0B41C3 /* CinderApp.icns */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		E710EA921E4BA5C90017BB3B /* vert.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA911E4BA5C90017BB3B /* vert.glsl */; };
-		E710EA941E4BA5F20017BB3B /* frag.glsl in Resources */ = {isa = PBXBuildFile; fileRef = E710EA931E4BA5F20017BB3B /* frag.glsl */; };
 		E731FA781E9C6C3600A74197 /* DecayProcessor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E731FA761E9C6C3600A74197 /* DecayProcessor.cpp */; };
 		E732E0831E5E4047009F9059 /* MeshNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E732E0811E5E4047009F9059 /* MeshNode.cpp */; };
 		E745849A1E7D70B9001288C9 /* VolumeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E74584981E7D70B9001288C9 /* VolumeNode.cpp */; };
+		E79350321EB01527001C71AB /* assets in Resources */ = {isa = PBXBuildFile; fileRef = E79350311EB01527001C71AB /* assets */; };
 		E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */; };
 		E7DBCBEC1E8B17DB002097DE /* TestPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7DBCBEA1E8B17DB002097DE /* TestPipeline.cpp */; };
 		E7E721701E6758720088765E /* libopenvdb.4.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */; };
@@ -56,14 +55,13 @@
 		E70D87351E883F8F00FE3A29 /* Queue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Queue.hpp; sourceTree = "<group>"; };
 		E70D87381E8842EC00FE3A29 /* Stage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Stage.hpp; sourceTree = "<group>"; };
 		E70D873B1E8844A700FE3A29 /* StageProcessor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = StageProcessor.hpp; sourceTree = "<group>"; };
-		E710EA911E4BA5C90017BB3B /* vert.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vert.glsl; path = ../resources/vert.glsl; sourceTree = "<group>"; };
-		E710EA931E4BA5F20017BB3B /* frag.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frag.glsl; path = ../resources/frag.glsl; sourceTree = "<group>"; };
 		E731FA761E9C6C3600A74197 /* DecayProcessor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DecayProcessor.cpp; sourceTree = "<group>"; };
 		E731FA771E9C6C3600A74197 /* DecayProcessor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DecayProcessor.hpp; sourceTree = "<group>"; };
 		E732E0811E5E4047009F9059 /* MeshNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshNode.cpp; sourceTree = "<group>"; };
 		E732E0821E5E4047009F9059 /* MeshNode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MeshNode.hpp; sourceTree = "<group>"; };
 		E74584981E7D70B9001288C9 /* VolumeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VolumeNode.cpp; sourceTree = "<group>"; };
 		E74584991E7D70B9001288C9 /* VolumeNode.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = VolumeNode.hpp; sourceTree = "<group>"; };
+		E79350311EB01527001C71AB /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
 		E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FPSCamera.cpp; sourceTree = "<group>"; };
 		E7AFCDDB1E74337C005775EA /* FPSCamera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FPSCamera.hpp; sourceTree = "<group>"; };
 		E7DBCBEA1E8B17DB002097DE /* TestPipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestPipeline.cpp; sourceTree = "<group>"; };
@@ -164,6 +162,7 @@
 		29B97314FDCFA39411CA2CEA /* BRU12 */ = {
 			isa = PBXGroup;
 			children = (
+				E79350311EB01527001C71AB /* assets */,
 				01B97315FEAEA392516A2CEA /* Blocks */,
 				29B97315FDCFA39411CA2CEA /* Headers */,
 				080E96DDFE201D6D7F000001 /* Source */,
@@ -188,8 +187,6 @@
 			children = (
 				E6126BC6748348888E0B41C3 /* CinderApp.icns */,
 				39E85E3A751C493886651B5F /* Info.plist */,
-				E710EA911E4BA5C90017BB3B /* vert.glsl */,
-				E710EA931E4BA5F20017BB3B /* frag.glsl */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -281,9 +278,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E710EA921E4BA5C90017BB3B /* vert.glsl in Resources */,
+				E79350321EB01527001C71AB /* assets in Resources */,
 				7670E6484404493A89BFE10E /* CinderApp.icns in Resources */,
-				E710EA941E4BA5F20017BB3B /* frag.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,7 +329,7 @@
 					/usr/local/Cellar/ilmbase/2.2.0/lib,
 				);
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder_d.a\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = rs.brutalism.BRU12;
 				PRODUCT_NAME = BRU12;
 				SYMROOT = ./build;
 				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include ../src/beton ../src";
@@ -368,7 +364,7 @@
 					/usr/local/Cellar/ilmbase/2.2.0/lib,
 				);
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder.a\"";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = rs.brutalism.BRU12;
 				PRODUCT_NAME = BRU12;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = ./build;
