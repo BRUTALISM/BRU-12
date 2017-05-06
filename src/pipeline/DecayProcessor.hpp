@@ -10,6 +10,10 @@ class DecayProcessor: public beton::StageProcessor<BRU12Pipeline::Input, BRU12Pi
     std::mt19937 generator;
     std::uniform_real_distribution<double> decayJitter;
     ci::Perlin perlin;
+	ci::gl::ContextRef glContext;
 
-    BRU12Pipeline::Output process(BRU12Pipeline::Input& input);
+public:
+	DecayProcessor(ci::gl::ContextRef context);
+	void threadSetup() override;
+    BRU12Pipeline::Output process(BRU12Pipeline::Input& input) override;
 };

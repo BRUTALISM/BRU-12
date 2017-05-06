@@ -28,8 +28,7 @@ public:
     };
 
     struct Output {
-        const std::vector<MeshNode> nodes;
-        const std::vector<openvdb::Vec3I> triangles;
+		const ci::gl::VboMeshRef mesh;
     };
 
     BRU12Pipeline(const Params& params);

@@ -12,6 +12,12 @@ using namespace ci;
 using namespace ci::gl;
 using namespace openvdb::tools;
 
+DecayProcessor::DecayProcessor(ci::gl::ContextRef context) : glContext(context) {}
+
+void DecayProcessor::threadSetup() {
+	glContext->makeCurrent();
+}
+
 // Heavily tweaked doVolumeToMesh from VolumeToMesh.h
 void gridToMesh(const VolumeNodeGridType& grid,
                 vector<MeshNode>& nodes,
@@ -104,9 +110,19 @@ BRU12Pipeline::Output DecayProcessor::process(BRU12Pipeline::Input& input) {
 
     gridToMesh(input.grid, nodes, triangles, input.params.isoValue);
 
+	geom::BufferLayout layout;
+	layout.append(geom::Attrib::POSITION, 3, sizeof(MeshNode),
+				  offsetof(MeshNode, position));
+	layout.append(geom::Attrib::COLOR, 3, sizeof(MeshNode), offsetof(MeshNode, color));
+
+	auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
+	auto volumeMesh = gl::VboMesh::create(
+										  (uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
+										  (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
+
+	volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
 
     return BRU12Pipeline::Output {
-        .nodes = move(nodes),
-        .triangles = move(triangles)
+        .mesh = move(volumeMesh)
     };
 }

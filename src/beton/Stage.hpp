@@ -37,6 +37,8 @@ namespace beton {
         void pushProcessor(std::shared_ptr<StageProcessor<TIn, TOut>> processor) {
             processors.push_back(processor);
             threads.push_back(std::thread([=] () {
+				processor->threadSetup();
+
                 while (running) {
                     // Wait with timeout, otherwise thread can't be joined.
                     boost::optional<TIn> dataIn = inQueue->tryPop(std::chrono::milliseconds(1000));

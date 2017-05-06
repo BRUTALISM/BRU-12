@@ -25,7 +25,7 @@ const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
 
 const BRU12Pipeline::Params PIPELINE_PARAMS = {
     .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
-    .densityPerUnit = 3,
+    .densityPerUnit = 10,
     .gridBackgroundValue = 0.0f,
     .gridFillValue = 1.0f,
     .isoValue = 0.95f,
@@ -134,24 +134,7 @@ void BRU12App::update() {
         auto result = outQueue->tryPop(chrono::milliseconds(1));
         if (result) {
             auto unwrappedResult = *result;
-            auto& nodes = unwrappedResult.nodes;
-            auto& triangles = unwrappedResult.triangles;
-
-            geom::BufferLayout layout;
-            layout.append(geom::Attrib::POSITION, 3, sizeof(MeshNode),
-                          offsetof(MeshNode, position));
-            layout.append(geom::Attrib::COLOR, 3, sizeof(MeshNode), offsetof(MeshNode, color));
-
-            auto vbo = gl::Vbo::create(GL_ARRAY_BUFFER, nodes, GL_STATIC_DRAW);
-            auto volumeMesh = gl::VboMesh::create(
-                (uint32_t) nodes.size(), GL_TRIANGLES, {{ layout, vbo }},
-                (uint32_t) triangles.size() * 3, GL_UNSIGNED_INT);
-
-            volumeMesh->bufferIndices(triangles.size() * 3 * sizeof(uint32_t), triangles.data());
-
-            latestMesh = volumeMesh;
-
-            cout << nodes.size() << " nodes, " << triangles.size() << " triangles" << endl;
+            latestMesh = unwrappedResult.mesh;
 
             if (updateProcess) {
                 pipeline.nextIteration();

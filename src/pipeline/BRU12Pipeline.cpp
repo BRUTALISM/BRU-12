@@ -23,9 +23,12 @@ BRU12Pipeline::BRU12Pipeline(const Params& params) :
         auto res = 1.0 / subdivision;
         linearTransform->preScale(openvdb::Vec3d(res, res, res));
         grid.setTransform(linearTransform);
+
+		// Create a separate GL context for the processor
+		auto context = ci::gl::Context::create(ci::gl::Context::getCurrent());
         
         // Start the pipeline
-        stage.pushProcessor(make_shared<DecayProcessor>());
+        stage.pushProcessor(make_shared<DecayProcessor>(context));
 }
 
 void BRU12Pipeline::nextIteration() {
