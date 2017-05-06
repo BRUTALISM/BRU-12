@@ -82,28 +82,41 @@ void gridToMesh(const VolumeNodeGridType& grid,
     }
 }
 
+class DecayOperation {
+	BRU12Pipeline::Input& input;
+	std::mt19937& generator;
+	std::uniform_real_distribution<double>& decayJitter;
+public:
+	DecayOperation(BRU12Pipeline::Input& input,
+				   std::mt19937& generator,
+				   std::uniform_real_distribution<double>& decayJitter) :
+	input(input), generator(generator), decayJitter(decayJitter) {}
+
+	inline void operator()(const VolumeNodeGridType::ValueOnIter& iterator) const {
+		const double boundY = input.params.volumeBounds.y * input.params.densityPerUnit;
+		auto value = iterator.getValue();
+		auto coord = iterator.getCoord();
+
+		value.life -= ((boundY - coord.y()) / boundY) * input.params.decayMultiplier *
+		decayJitter(generator);
+
+		//        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
+		//        value.life -= perlin.fBm(coordVec) * input.params.decayMultiplier *
+		//            decayJitter(generator);
+
+		auto t = coord.y() / (input.params.volumeBounds.y * input.params.densityPerUnit);
+		value.color = Color(value.color.r, 0.0f, t);
+
+		if (value.life < input.params.gridBackgroundValue) {
+			iterator.setActiveState(false);
+		} else {
+			iterator.setValue(value);
+		}
+	}
+};
+
 BRU12Pipeline::Output DecayProcessor::process(BRU12Pipeline::Input& input) {
-    const double boundY = input.params.volumeBounds.y * input.params.densityPerUnit;
-    for (auto iterator = input.grid.beginValueOn(); iterator.test(); ++iterator) {
-        auto value = iterator.getValue();
-        auto coord = iterator.getCoord();
-
-        value.life -= ((boundY - coord.y()) / boundY) * input.params.decayMultiplier *
-            decayJitter(generator);
-
-//        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
-//        value.life -= perlin.fBm(coordVec) * input.params.decayMultiplier *
-//            decayJitter(generator);
-
-        auto t = coord.y() / (input.params.volumeBounds.y * input.params.densityPerUnit);
-        value.color = Color(value.color.r, 0.0f, t);
-
-        if (value.life < input.params.gridBackgroundValue) {
-            iterator.setActiveState(false);
-        } else {
-            iterator.setValue(value);
-        }
-    }
+	foreach(input.grid.beginValueOn(), DecayOperation(input, generator, decayJitter));
 
     vector<MeshNode> nodes;
     vector<openvdb::Vec3I> triangles;
