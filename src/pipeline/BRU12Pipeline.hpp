@@ -1,27 +1,14 @@
 #pragma once
 
-#include <openvdb/openvdb.h>
-
+#include "Params.hpp"
 #include "MeshNode.hpp"
-#include "VolumeNode.hpp"
 #include "Queue.hpp"
-
+#include "PreparedGrid.hpp"
 #include "Stage.hpp"
-
-typedef openvdb::tree::Tree4<VolumeNode, 5, 4, 3>::Type VolumeNodeTreeType;
-typedef openvdb::Grid<VolumeNodeTreeType> VolumeNodeGridType;
+#include "VolumeNodeGridType.hpp"
 
 class BRU12Pipeline {
 public:
-    struct Params {
-        const ci::vec3 volumeBounds;
-        const int densityPerUnit;
-        const float gridFillValue;
-        const float gridBackgroundValue;
-        const float isoValue;
-        const float decayMultiplier;
-    };
-
     struct Input {
         VolumeNodeGridType& grid;
         Params params;
@@ -43,7 +30,9 @@ private:
     VolumeNodeGridType grid;
 
     beton::QueueRef<Input> inQueue;
+	beton::QueueRef<PreparedGrid> preparedGridQueue;
     beton::QueueRef<Output> outQueue;
 
-    beton::Stage<Input, Output> stage;
+    beton::Stage<Input, PreparedGrid> decayStage;
+	beton::Stage<PreparedGrid, Output> mesherStage;
 };

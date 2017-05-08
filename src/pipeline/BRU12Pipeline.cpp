@@ -1,12 +1,15 @@
 #include "BRU12Pipeline.hpp"
-#include "DecayProcessor.hpp"
+#include "Decay.hpp"
+#include "Mesher.hpp"
 
 using namespace std;
 using namespace ci;
 
 BRU12Pipeline::BRU12Pipeline(const Params& params) :
     params(params), grid(params.gridBackgroundValue), inQueue(make_shared<beton::Queue<Input>>()),
-    outQueue(make_shared<beton::Queue<Output>>()), stage(inQueue, outQueue) {
+	preparedGridQueue(make_shared<beton::Queue<PreparedGrid>>()),
+    outQueue(make_shared<beton::Queue<Output>>()), decayStage(inQueue, preparedGridQueue),
+	mesherStage(preparedGridQueue, outQueue) {
         // Initialize the grid
         openvdb::initialize();
 
@@ -28,7 +31,8 @@ BRU12Pipeline::BRU12Pipeline(const Params& params) :
 		auto context = ci::gl::Context::create(ci::gl::Context::getCurrent());
         
         // Start the pipeline
-        stage.pushProcessor(make_shared<DecayProcessor>(context));
+        decayStage.pushProcessor(make_shared<Decay>());
+		mesherStage.pushProcessor(make_shared<Mesher>(context));
 }
 
 void BRU12Pipeline::nextIteration() {

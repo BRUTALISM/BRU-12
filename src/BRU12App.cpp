@@ -23,7 +23,7 @@ const float CAMERA_MOVEMENT_SPEED = 0.2f;
 const float CAMERA_MOUSE_SENSITIVITY = 0.02f;
 const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
 
-const BRU12Pipeline::Params PIPELINE_PARAMS = {
+const Params PIPELINE_PARAMS = {
     .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
     .densityPerUnit = 10,
     .gridBackgroundValue = 0.0f,
