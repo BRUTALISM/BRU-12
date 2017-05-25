@@ -41,8 +41,10 @@ public:
 		//        value.life -= perlin.fBm(coordVec) * input.params.decayMultiplier *
 		//            decayJitter(generator);
 
-		auto t = coord.y() / (input.params.volumeBounds.y * input.params.densityPerUnit);
-		value.color = Color(value.color.r, 0.0f, t);
+        auto xScale = input.params.volumeBounds.x * input.params.densityPerUnit;
+        auto yScale = input.params.volumeBounds.y * input.params.densityPerUnit;
+		auto t = coord.y() / yScale;
+		value.color = Color(value.color.r, coord.x() / xScale, t);
 
 		if (value.life < input.params.gridBackgroundValue) {
 			iterator.setActiveState(false);

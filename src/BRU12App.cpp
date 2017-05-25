@@ -28,7 +28,7 @@ const Params PIPELINE_PARAMS = {
     .densityPerUnit = 10,
     .gridBackgroundValue = 0.0f,
     .gridFillValue = 1.0f,
-    .isoValue = 0.95f,
+    .isoValue = 0.98f,
     .decayMultiplier = 0.005f
 };
 
