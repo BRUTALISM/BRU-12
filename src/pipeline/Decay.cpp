@@ -1,29 +1,38 @@
 #include <openvdb/openvdb.h>
 #include <openvdb/tools/ValueTransformer.h>
+#include <openvdb/tree/ValueAccessor.h>
 
 #include "Decay.hpp"
 
+#include "VolumeNodeGridType.hpp"
 #include "MeshNode.hpp"
 
 using namespace std;
 using namespace ci;
 using namespace ci::gl;
 using namespace openvdb::tools;
+using namespace openvdb::tree;
 
 class DecayOperation {
-	BRU12Pipeline::Input& input;
+    BRU12Pipeline::Input& input;
+    ValueAccessorRW<VolumeNodeTreeType> accessor;
 	std::mt19937& generator;
 	std::uniform_real_distribution<double>& decayJitter;
 public:
 	DecayOperation(BRU12Pipeline::Input& input,
 				   std::mt19937& generator,
 				   std::uniform_real_distribution<double>& decayJitter) :
-	input(input), generator(generator), decayJitter(decayJitter) {}
+	input(input),
+    accessor(ValueAccessorRW<VolumeNodeTreeType>(input.grid.tree())),
+    generator(generator),
+    decayJitter(decayJitter)
+    {}
 
 	inline void operator()(const VolumeNodeGridType::ValueOnIter& iterator) const {
 		const double boundY = input.params.volumeBounds.y * input.params.densityPerUnit;
-		auto value = iterator.getValue();
 		auto coord = iterator.getCoord();
+        // auto value = iterator.getValue();
+        auto value = accessor.getValue(coord);
 
 		value.life -= ((boundY - coord.y()) / boundY) * input.params.decayMultiplier *
 		decayJitter(generator);

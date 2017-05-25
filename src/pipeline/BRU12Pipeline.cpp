@@ -29,7 +29,7 @@ BRU12Pipeline::BRU12Pipeline(const Params& params) :
 
 		// Create a separate GL context for the processor
 		auto context = ci::gl::Context::create(ci::gl::Context::getCurrent());
-        
+
         // Start the pipeline
         decayStage.pushProcessor(make_shared<Decay>());
 		mesherStage.pushProcessor(make_shared<Mesher>(context));
