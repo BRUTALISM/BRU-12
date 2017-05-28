@@ -15,31 +15,28 @@ using namespace openvdb::tree;
 
 class DecayOperation {
     BRU12Pipeline::Input& input;
-    ValueAccessorRW<VolumeNodeTreeType> accessor;
+    VolumeNodeGridType::ConstAccessor accessor;
 	std::mt19937& generator;
 	std::uniform_real_distribution<double>& decayJitter;
+
 public:
 	DecayOperation(BRU12Pipeline::Input& input,
-				   std::mt19937& generator,
-				   std::uniform_real_distribution<double>& decayJitter) :
+                   std::mt19937& generator,
+                   std::uniform_real_distribution<double>& decayJitter) :
 	input(input),
-    accessor(ValueAccessorRW<VolumeNodeTreeType>(input.grid.tree())),
+    accessor(input.grid.getConstAccessor()),
     generator(generator),
-    decayJitter(decayJitter)
-    {}
+    decayJitter(decayJitter) { }
 
 	inline void operator()(const VolumeNodeGridType::ValueOnIter& iterator) const {
-		const double boundY = input.params.volumeBounds.y * input.params.densityPerUnit;
 		auto coord = iterator.getCoord();
         // auto value = iterator.getValue();
         auto value = accessor.getValue(coord);
 
-		value.life -= ((boundY - coord.y()) / boundY) * input.params.decayMultiplier *
-		decayJitter(generator);
-
-		//        auto coordVec = vec3(coord.x(), coord.y(), coord.z()) * 0.1f;
-		//        value.life -= perlin.fBm(coordVec) * input.params.decayMultiplier *
-		//            decayJitter(generator);
+        const double boundY = input.params.volumeBounds.y * input.params.densityPerUnit;
+        auto decay = ((boundY - coord.y()) / boundY) * input.params.decayMultiplier *
+            decayJitter(generator);
+        value.life -= decay;
 
         auto xScale = input.params.volumeBounds.x * input.params.densityPerUnit;
         auto yScale = input.params.volumeBounds.y * input.params.densityPerUnit;

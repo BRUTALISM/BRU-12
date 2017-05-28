@@ -16,8 +16,8 @@ struct VolumeNode {
     VolumeNode(double life, ci::Color color) : life(life), color(color) {}
 
     // Explicit operators needed by OpenVDB
-    explicit operator double() const { return life; }
-    explicit operator float() const { return life; }
+    explicit inline operator double() const { return life; }
+    explicit inline operator float() const { return life; }
 };
 
 // Arithmetic operators

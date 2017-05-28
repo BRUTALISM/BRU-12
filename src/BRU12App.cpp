@@ -19,7 +19,7 @@ using namespace std;
 const int WIDTH = 1200;
 const int HEIGHT = 768;
 const int SCREENSHOT_HEIGHT = 2880;
-const float CAMERA_MOVEMENT_SPEED = 0.2f;
+const float CAMERA_MOVEMENT_SPEED = 0.02f;
 const float CAMERA_MOUSE_SENSITIVITY = 0.02f;
 const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
 
@@ -29,7 +29,8 @@ const Params PIPELINE_PARAMS = {
     .gridBackgroundValue = 0.0f,
     .gridFillValue = 1.0f,
     .isoValue = 0.98f,
-    .decayMultiplier = 0.005f
+    .decayMultiplier = 0.005f,
+    .growthMultiplier = 0.006f
 };
 
 class BRU12App : public App {
