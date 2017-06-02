@@ -1,5 +1,4 @@
-#ifndef VolumeNode_hpp
-#define VolumeNode_hpp
+#pragma once
 
 #include <stdio.h>
 #include <math.h>
@@ -71,5 +70,3 @@ inline std::ostream& operator<<(std::ostream& lhs, const VolumeNode& rhs) {
     lhs << "VolumeNode(life: " << rhs.life << ", color: " << rhs.color << ")";
     return lhs;
 }
-
-#endif /* VolumeNode_hpp */

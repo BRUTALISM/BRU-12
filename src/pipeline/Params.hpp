@@ -7,5 +7,4 @@ struct Params {
 	const float gridBackgroundValue;
 	const float isoValue;
 	const float decayMultiplier;
-    const float growthMultiplier;
 };

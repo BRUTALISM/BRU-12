@@ -26,6 +26,7 @@
 		E79350321EB01527001C71AB /* assets in Resources */ = {isa = PBXBuildFile; fileRef = E79350311EB01527001C71AB /* assets */; };
 		E79350351EC03300001C71AB /* Mesher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E79350331EC03300001C71AB /* Mesher.cpp */; };
 		E7AFCDDC1E74337C005775EA /* FPSCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */; };
+		E7D5063C1EDEFC5B00AC05CE /* Muncher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7D5063A1EDEFC5B00AC05CE /* Muncher.cpp */; };
 		E7DBCBEC1E8B17DB002097DE /* TestPipeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E7DBCBEA1E8B17DB002097DE /* TestPipeline.cpp */; };
 		E7E721701E6758720088765E /* libopenvdb.4.0.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */; };
 		E7E7217C1E675D010088765E /* libtbb.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E7217B1E675D010088765E /* libtbb.dylib */; };
@@ -70,6 +71,8 @@
 		E79350381EC04410001C71AB /* Params.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Params.hpp; sourceTree = "<group>"; };
 		E7AFCDDA1E74337C005775EA /* FPSCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FPSCamera.cpp; sourceTree = "<group>"; };
 		E7AFCDDB1E74337C005775EA /* FPSCamera.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = FPSCamera.hpp; sourceTree = "<group>"; };
+		E7D5063A1EDEFC5B00AC05CE /* Muncher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Muncher.cpp; sourceTree = "<group>"; };
+		E7D5063B1EDEFC5B00AC05CE /* Muncher.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Muncher.hpp; sourceTree = "<group>"; };
 		E7DBCBEA1E8B17DB002097DE /* TestPipeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestPipeline.cpp; sourceTree = "<group>"; };
 		E7DBCBEB1E8B17DB002097DE /* TestPipeline.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TestPipeline.hpp; sourceTree = "<group>"; };
 		E7E7216E1E6758220088765E /* libopenvdb.4.0.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopenvdb.4.0.0.dylib; path = ../../../../../usr/local/Cellar/openvdb/4.0.0_1/lib/libopenvdb.4.0.0.dylib; sourceTree = "<group>"; };
@@ -225,6 +228,8 @@
 				E79350371EC04023001C71AB /* VolumeNodeGridType.hpp */,
 				E7EDF4251E9AA50B000CBD89 /* BRU12Pipeline.cpp */,
 				E7EDF4261E9AA50B000CBD89 /* BRU12Pipeline.hpp */,
+				E7D5063A1EDEFC5B00AC05CE /* Muncher.cpp */,
+				E7D5063B1EDEFC5B00AC05CE /* Muncher.hpp */,
 				E731FA761E9C6C3600A74197 /* Decay.cpp */,
 				E731FA771E9C6C3600A74197 /* Decay.hpp */,
 				E79350361EC035A8001C71AB /* PreparedGrid.hpp */,
@@ -305,6 +310,7 @@
 				E731FA781E9C6C3600A74197 /* Decay.cpp in Sources */,
 				56BD8060178346DEB90E7048 /* BRU12App.cpp in Sources */,
 				E745849A1E7D70B9001288C9 /* VolumeNode.cpp in Sources */,
+				E7D5063C1EDEFC5B00AC05CE /* Muncher.cpp in Sources */,
 				E7DBCBEC1E8B17DB002097DE /* TestPipeline.cpp in Sources */,
 				E732E0831E5E4047009F9059 /* MeshNode.cpp in Sources */,
 				E7EDF4271E9AA50B000CBD89 /* BRU12Pipeline.cpp in Sources */,

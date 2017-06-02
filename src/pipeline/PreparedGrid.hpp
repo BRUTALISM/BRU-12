@@ -4,6 +4,6 @@
 #include "VolumeNodeGridType.hpp"
 
 struct PreparedGrid {
-	const VolumeNodeGridType& grid;
-	const Params& params;
+	VolumeNodeGridType& grid;
+	Params& params;
 };

@@ -1,11 +1,11 @@
-#include <openvdb/openvdb.h>
-#include <openvdb/tools/ValueTransformer.h>
-#include <openvdb/tree/ValueAccessor.h>
-
 #include "Decay.hpp"
 
 #include "VolumeNodeGridType.hpp"
 #include "MeshNode.hpp"
+
+#include <openvdb/openvdb.h>
+#include <openvdb/tools/ValueTransformer.h>
+#include <openvdb/tree/ValueAccessor.h>
 
 using namespace std;
 using namespace ci;
@@ -14,13 +14,13 @@ using namespace openvdb::tools;
 using namespace openvdb::tree;
 
 class DecayOperation {
-    BRU12Pipeline::Input& input;
+    PreparedGrid& input;
     VolumeNodeGridType::ConstAccessor accessor;
 	std::mt19937& generator;
 	std::uniform_real_distribution<double>& decayJitter;
 
 public:
-	DecayOperation(BRU12Pipeline::Input& input,
+	DecayOperation(PreparedGrid& input,
                    std::mt19937& generator,
                    std::uniform_real_distribution<double>& decayJitter) :
 	input(input),
@@ -51,7 +51,7 @@ public:
 	}
 };
 
-PreparedGrid Decay::process(BRU12Pipeline::Input& input) {
+PreparedGrid Decay::process(PreparedGrid& input) {
 	foreach(input.grid.beginValueOn(), DecayOperation(input, generator, decayJitter));
 
 	return PreparedGrid {

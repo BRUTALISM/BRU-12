@@ -30,9 +30,11 @@ private:
     VolumeNodeGridType grid;
 
     beton::QueueRef<Input> inQueue;
-	beton::QueueRef<PreparedGrid> preparedGridQueue;
+	beton::QueueRef<PreparedGrid> muncherOutQueue;
+    beton::QueueRef<PreparedGrid> decayOutQueue;
     beton::QueueRef<Output> outQueue;
 
-    beton::Stage<Input, PreparedGrid> decayStage;
+    beton::Stage<Input, PreparedGrid> muncherStage;
+    beton::Stage<PreparedGrid, PreparedGrid> decayStage;
 	beton::Stage<PreparedGrid, Output> mesherStage;
 };

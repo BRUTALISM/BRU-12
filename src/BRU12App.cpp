@@ -19,18 +19,17 @@ using namespace std;
 const int WIDTH = 1200;
 const int HEIGHT = 768;
 const int SCREENSHOT_HEIGHT = 2880;
-const float CAMERA_MOVEMENT_SPEED = 0.02f;
+const float CAMERA_MOVEMENT_SPEED = 0.1f;
 const float CAMERA_MOUSE_SENSITIVITY = 0.02f;
 const Color BACKGROUND_COLOR = Color(0.0f, 0.0f, 0.0f);
 
 const Params PIPELINE_PARAMS = {
-    .volumeBounds = vec3(10.0f, 10.0f, 10.0f),
-    .densityPerUnit = 10,
+    .volumeBounds = vec3(40.0f, 10.0f, 2.0f),
+    .densityPerUnit = 8,
     .gridBackgroundValue = 0.0f,
     .gridFillValue = 1.0f,
     .isoValue = 0.98f,
-    .decayMultiplier = 0.005f,
-    .growthMultiplier = 0.006f
+    .decayMultiplier = 0.003f
 };
 
 class BRU12App : public App {
@@ -170,7 +169,7 @@ void BRU12App::takeScreenshot(int height) {
 
     auto homeDirectory = Platform::get()->getHomeDirectory();
     auto imageName = "image_" + toString(time(nullptr)) + ".png";
-    writeImage(homeDirectory / imageName, framebuffer->getColorTexture()->createSource());
+    writeImage(homeDirectory / "Desktop" / imageName, framebuffer->getColorTexture()->createSource());
 
     framebuffer->unbindFramebuffer();
     gl::viewport(originalViewport);
