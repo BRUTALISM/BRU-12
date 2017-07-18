@@ -52,7 +52,7 @@ private:
     shared_ptr<FPSCamera> fpsCamera;
     gl::GlslProgRef	glslProg;
 
-    bool wireframe = false;
+    bool wireframe = true;
     bool updateProcess = true;
 
     BRU12Pipeline pipeline;
@@ -85,6 +85,9 @@ void BRU12App::setup() {
 
     gl::enableDepthWrite();
     gl::enableDepthRead();
+
+    if (wireframe) gl::enableWireframe();
+    else gl::disableWireframe();
 
     pipeline.nextIteration();
 }
