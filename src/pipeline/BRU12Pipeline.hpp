@@ -15,7 +15,7 @@ public:
     };
 
     struct Output {
-		const ci::gl::VboMeshRef mesh;
+        const ci::gl::VboMeshRef mesh;
     };
 
     BRU12Pipeline(const Params& params);
@@ -30,11 +30,11 @@ private:
     VolumeNodeGridType grid;
 
     beton::QueueRef<Input> inQueue;
-	beton::QueueRef<PreparedGrid> muncherOutQueue;
+    beton::QueueRef<PreparedGrid> muncherOutQueue;
     beton::QueueRef<PreparedGrid> decayOutQueue;
     beton::QueueRef<Output> outQueue;
 
     beton::Stage<Input, PreparedGrid> muncherStage;
     beton::Stage<PreparedGrid, PreparedGrid> decayStage;
-	beton::Stage<PreparedGrid, Output> mesherStage;
+    beton::Stage<PreparedGrid, Output> mesherStage;
 };

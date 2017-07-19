@@ -29,7 +29,7 @@ namespace beton {
 
             auto value = queue.front();
             queue.pop();
-            
+
             return value;
         }
 
@@ -44,7 +44,7 @@ namespace beton {
 
             auto value = queue.front();
             queue.pop();
-            
+
             return value;
         }
 
@@ -63,6 +63,6 @@ namespace beton {
             return queue.empty();
         }
     };
-
+    
     template<typename T> using QueueRef = std::shared_ptr<Queue<T>>;
 }

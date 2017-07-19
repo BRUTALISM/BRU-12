@@ -5,11 +5,11 @@
 #include "StageProcessor.hpp"
 
 class Mesher : public beton::StageProcessor<PreparedGrid, BRU12Pipeline::Output> {
-	ci::gl::ContextRef glContext;
+    ci::gl::ContextRef glContext;
 
 public:
-	Mesher(ci::gl::ContextRef context);
-	void threadSetup() override;
+    Mesher(ci::gl::ContextRef context);
+    void threadSetup() override;
 
-	BRU12Pipeline::Output process(PreparedGrid& input) override;
+    BRU12Pipeline::Output process(PreparedGrid& input) override;
 };

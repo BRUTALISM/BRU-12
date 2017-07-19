@@ -12,8 +12,8 @@ namespace beton {
         StageProcessor() = default;
         virtual ~StageProcessor() = default;
 
-		/// Optional setup function, invoked once on the thread dedicated to running the process fn.
-		virtual void threadSetup() {}
+        /// Optional setup function, invoked once on the thread dedicated to running the process fn.
+        virtual void threadSetup() {}
 
         virtual TOut process(TIn& data) = 0;
     };

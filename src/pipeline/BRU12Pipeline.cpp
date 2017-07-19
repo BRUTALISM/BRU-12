@@ -23,13 +23,13 @@ BRU12Pipeline::BRU12Pipeline(const Params& params) :
         linearTransform->preScale(openvdb::Vec3d(res, res, res));
         grid.setTransform(linearTransform);
 
-		// Create a separate GL context for the processor
-		auto context = ci::gl::Context::create(ci::gl::Context::getCurrent());
+        // Create a separate GL context for the processor
+        auto context = ci::gl::Context::create(ci::gl::Context::getCurrent());
 
         // Start the pipeline
         muncherStage.pushProcessor(make_shared<Muncher>());
         decayStage.pushProcessor(make_shared<Decay>());
-		mesherStage.pushProcessor(make_shared<Mesher>(context));
+        mesherStage.pushProcessor(make_shared<Mesher>(context));
 }
 
 void BRU12Pipeline::nextIteration() {
